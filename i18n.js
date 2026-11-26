@@ -6,10 +6,33 @@ const sakugaSite = (() => {
     { code: 'zh-CN', name: '简体中文', copyAttribute: 'data-zh' },
     { code: 'ja', name: '日本語', copyAttribute: 'data-ja' },
   ];
-  const languageIndex = Math.max(0, languages.findIndex(({ code }) => code === query.get('lang')));
-  const { code: lang, copyAttribute } = languages[languageIndex];
+  const STORAGE_KEY = 'sakuga-lang';
+
+  // Collapse regional tags onto the one edition shipped per language. Unsupported tags return null so callers can fall through.
+  // `zh-Hans`, `zh-TW`, `zh-HK`... use the Simplified Chinese edition; `ja-JP` -> ja; `en-US` -> en.
+  function normalize(tag) {
+    if (typeof tag !== 'string') return null;
+    const primary = tag.trim().toLowerCase().split(/[-_]/)[0];
+    return primary === 'zh' ? 'zh-CN' : primary === 'ja' ? 'ja' : primary === 'en' ? 'en' : null;
+  }
+
+  function readPreference() {
+    try { return normalize(localStorage.getItem(STORAGE_KEY)); } catch { return null; }   // storage may be disabled
+  }
+  function savePreference(code) {
+    const value = normalize(code);
+    if (!value) return;
+    try { localStorage.setItem(STORAGE_KEY, value); } catch {}
+  }
+
+  // Priority: explicit URL parameter > saved choice > browser languages > English. Invalid tags are simply ignored.
+  const browserLangs = navigator.languages?.length ? navigator.languages : [navigator.language];
+  const fromBrowser = browserLangs.map(normalize).find(Boolean);
+  const lang = normalize(query.get('lang')) || readPreference() || fromBrowser || 'en';
+  const languageIndex = Math.max(0, languages.findIndex(({ code }) => code === lang));
+  const { copyAttribute } = languages[languageIndex];
   const text = (...translations) => translations[languageIndex] ?? translations[0];
-  document.documentElement.lang = lang;
+  document.documentElement.lang = lang;   // keeps the Canvas lettering in step with the interface
   if (query.get('embed') === '1') document.documentElement.classList.add('embed');
 
   // Translations use the same order as languages above.
@@ -74,18 +97,26 @@ const sakugaSite = (() => {
       }
     }
 
-    const nav = document.querySelector('[data-language-switch]');
-    if (!nav) return;
-    nav.setAttribute('aria-label', text('Language', '语言', '言語'));
-    for (const { code, name } of languages) {
-      const anchor = document.createElement('a');
-      anchor.href = link(location.href, code);
-      anchor.lang = anchor.hreflang = code;
-      anchor.textContent = name;
-      if (code === lang) anchor.setAttribute('aria-current', 'page');
-      nav.append(anchor);
+    for (const nav of document.querySelectorAll('[data-language-switch]')) {
+      nav.setAttribute('aria-label', text('Language', '语言', '言語'));
+      nav.textContent = '';
+      for (const { code, name } of languages) {
+        const anchor = document.createElement('a');
+        anchor.href = link(location.href, code);
+        anchor.lang = anchor.hreflang = code;
+        anchor.dataset.language = code;
+        anchor.textContent = name;
+        if (code === lang) anchor.setAttribute('aria-current', 'page');
+        nav.append(anchor);
+      }
+      // Remember a deliberate click before the browser leaves, so the choice survives a later visit without ?lang.
+      nav.addEventListener('click', (event) => {
+        const anchor = event.target.closest?.('a[data-language]');
+        if (!anchor || !nav.contains(anchor) || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        savePreference(anchor.dataset.language);
+      });
     }
   }
 
-  return { text, t, link, localize };
+  return { text, t, link, localize, normalize, savePreference, get lang() { return lang; } };
 })();

@@ -30,7 +30,7 @@ Sakuga VFX は、おなじみの UI にアニメのような手応えを加え�
 
 ## デモ
 
-GitHub Pages のギャラリーを **[日本語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)**、[英語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)、[簡体字中国語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)で開けます。言語を切り替えると、画面の表示と描き文字の両方に反映されます。「ドキュメントとデモ」からコンポーネントのページを開いても、URL に選択した言語が引き継がれます。
+GitHub Pages のギャラリーを **[日本語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)**、[英語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)、[簡体字中国語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)で開けます。言語を切り替えると、画面の表示と描き文字の両方に反映されます。`?lang` がない場合は、保存した選択、ブラウザーの言語、英語の順に適用されます。言語リンクをクリックすると選択が保存され、次回以降も引き継がれます。「ドキュメントとデモ」からコンポーネントのページを開いても、URL に選択した言語が引き継がれます。
 
 ローカルで試すには、リポジトリのルートで次を実行してください。
 

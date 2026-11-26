@@ -265,8 +265,8 @@ class SakugaToggle extends fx.Base {
   static formAssociated = true;
   static observedAttributes = ['checked', 'disabled', 'label', 'value'];
   static css = `
-    :host { width: 108px; height: 54px; margin: 89px 21px 20px; }
-    .tog { position: relative; display: block; width: 108px; height: 54px; padding: 0; border: 0; border-radius: 27px; background: none; cursor: pointer; }
+    :host { width: 108px; height: 182px; margin: 0 21px; }
+    .tog { position: relative; display: block; width: 108px; height: 54px; margin-top: 64px; padding: 0; border: 0; border-radius: 27px; background: none; cursor: pointer; }
     .tog:disabled { cursor: not-allowed; opacity: .5; }
     canvas { position: absolute; left: -21px; top: -65px; width: 150px; height: 132px; pointer-events: none; }`;
 

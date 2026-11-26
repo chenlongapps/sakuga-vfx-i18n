@@ -32,7 +32,7 @@ White paper, two-tone effects (white, lavender and a violet line), pink accents,
 
 ## Demos
 
-Open the GitHub Pages gallery in **[English](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)**, [Simplified Chinese](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN), or [Japanese](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja). The language switch sets the language for the interface and sound-effect lettering. Each **Docs and demo** link keeps the selected language in its URL.
+Open the GitHub Pages gallery in **[English](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)**, [Simplified Chinese](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN), or [Japanese](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja). The language switch sets the language for the interface and sound-effect lettering. Without a `?lang` tag, the site uses your saved choice, then your browser language, and finally English; clicking a language link saves the choice for later visits. Each **Docs and demo** link keeps the selected language in its URL.
 
 To try the gallery locally, run this from the repository root:
 
@@ -67,7 +67,7 @@ For standalone use, set the page’s `<html lang>` to `en`, `zh-CN`, or `ja`. Ea
 
 - `core.js` is the source of the shared core. After editing it, run `node tools/build.mjs`, which copies it into every component file (between the `// >>> sakuga core` markers) and into the skill. `node tools/build.mjs --check` exits 1 if any file is out of date.
 - `art/words/<lang>/` contains the lettering sprites used at build time. See the [asset generation and tracing guide](art/words/README.md).
-- `node tools/test.mjs http://localhost:8000/gallery/` drives every control with real touch and key events at phone width, checks form values and sideways scroll, and exits 1 on a failure. `node tools/shot.mjs URL OUT W H SCALE` takes a full-page screenshot. Both need Chrome or Chromium (`CHROME=...` if it is somewhere unusual).
+- `node tools/test.mjs http://localhost:8000/gallery/` drives every control with real touch and key events at phone width, checks form values, sideways scroll and language detection/switching/persistence, and exits 1 on a failure. `node tools/shot.mjs URL OUT W H SCALE` takes a full-page screenshot. Both need Chrome or Chromium (`CHROME=...` if it is somewhere unusual).
 
 ## Limits
 

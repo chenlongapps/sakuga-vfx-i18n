@@ -30,7 +30,7 @@ Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持
 
 ## 演示
 
-在 GitHub Pages 打开 **[简体中文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)**、[英文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)或[日文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)。语言切换同时应用于界面与拟声字。从「文档与演示」进入组件页时，地址会保留当前语言。
+在 GitHub Pages 打开 **[简体中文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)**、[英文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)或[日文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)。语言切换同时应用于界面与拟声字。未指定 `?lang` 时，会依次采用已保存的选择、浏览器语言，最后回退英文；点击语言链接会记住选择，下次访问自动恢复。从「文档与演示」进入组件页时，地址会保留当前语言。
 
 如需在本地试用，在仓库根目录运行：
 

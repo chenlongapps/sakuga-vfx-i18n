@@ -76,4 +76,71 @@ check('one shared core', (await ev('window.SakugaFX.version')) === 1);
 { await ev(`(() => { const f = document.createElement('form'); f.id = 'tf'; f.innerHTML = '<sakuga-checkbox name="c" checked></sakuga-checkbox><sakuga-slider name="s" value="42"></sakuga-slider><sakuga-rating name="r" value="3"></sakuga-rating><sakuga-toggle name="t" checked></sakuga-toggle>'; document.body.append(f); })()`); await sleep(300);
   check('forms: values are sent with a form', (await ev(`new URLSearchParams(new FormData(document.getElementById('tf'))).toString()`)) === 'c=on&s=42&r=3&t=on', await ev(`new URLSearchParams(new FormData(document.getElementById('tf'))).toString()`)); }
 check('no horizontal scroll at 390', (await ev('document.documentElement.scrollWidth')) <= 390, await ev('document.documentElement.scrollWidth'));
+
+// ---- language detection, switching and persistence ----
+// The same tab is reused: navigator.languages is injected before each document, and the saved choice lives on this origin.
+const pageUrl = (lang) => { const u = new URL(URL_); if (lang === null) u.searchParams.delete('lang'); else u.searchParams.set('lang', lang); return u.href; };
+const waitFor = async (expr, ms = 12000) => { const end = Date.now() + ms; while (Date.now() < end) { if (await ev(expr)) return true; await sleep(100); } return false; };
+const go = async (url) => { await send('Page.navigate', { url }); return waitFor(`location.href === ${JSON.stringify(url)} && document.readyState === 'complete'`); };
+const htmlLang = () => ev('document.documentElement.lang');
+const preference = () => ev(`localStorage.getItem('sakuga-lang')`);
+const setPreference = (code) => ev(`(() => { try { ${code === null ? "localStorage.removeItem('sakuga-lang')" : `localStorage.setItem('sakuga-lang', ${JSON.stringify(code)})`}; } catch {} })()`);
+let navScript;
+const setBrowserLanguages = async (langs) => {
+  if (navScript) { await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: navScript }); navScript = null; }
+  const source = `Object.defineProperty(navigator, 'languages', { configurable: true, get: () => ${JSON.stringify(langs)} });`;
+  navScript = (await send('Page.addScriptToEvaluateOnNewDocument', { source })).identifier;
+};
+
+await setPreference(null);
+for (const [browsers, expected, expectedTitle] of [
+  [['ja-JP', 'en-US'], 'ja', 'Sakuga VFX コンポーネントギャラリー'],
+  [['zh-Hans'], 'zh-CN', 'Sakuga VFX 组件图库'],
+  [['zh-TW'], 'zh-CN', 'Sakuga VFX 组件图库'],
+  [['en-US'], 'en', 'Sakuga VFX'],
+]) {
+  await setBrowserLanguages(browsers);
+  check(`browser ${browsers[0]} selects ${expected}`, await go(pageUrl(null)) && (await htmlLang()) === expected, await htmlLang());
+  check(`browser ${browsers[0]} localizes the page`, (await ev('document.title')) === expectedTitle, await ev('document.title'));
+  check('interface and Canvas lettering share one language', (await ev('sakugaSite.lang')) === (await htmlLang()));
+}
+
+await setBrowserLanguages(['fr-FR']);   // an unsupported browser language falls through to the default
+await setPreference(null);
+check('invalid lang: the page still loads', await go(pageUrl('xx')));
+check('invalid lang: falls back to English', (await htmlLang()) === 'en', await htmlLang());
+check('invalid lang: the URL is left alone', new URL(await ev('location.href')).searchParams.get('lang') === 'xx', await ev('location.search'));
+await setPreference('ja');
+check('invalid lang: falls back to the saved choice', await go(pageUrl('nope')) && (await htmlLang()) === 'ja', await htmlLang());
+
+await setBrowserLanguages(['zh-CN']);
+check('URL lang beats the saved choice and browser', await go(pageUrl('en')) && (await htmlLang()) === 'en', await htmlLang());
+check('regional URL tag maps to zh-CN', await go(pageUrl('zh-TW')) && (await htmlLang()) === 'zh-CN', await htmlLang());
+check('regional URL tag is not rewritten', new URL(await ev('location.href')).searchParams.get('lang') === 'zh-TW', await ev('location.search'));
+
+await setBrowserLanguages(['en-US']);
+await setPreference(null);
+check('switch: starts in English', await go(pageUrl('en')) && (await htmlLang()) === 'en');
+await ev(`[...document.querySelectorAll('[data-language-switch] a')].find((a) => a.dataset.language === 'ja').click()`);
+check('switch: the link navigates to Japanese', await waitFor(`location.href === ${JSON.stringify(pageUrl('ja'))} && document.readyState === 'complete'`, 15000));
+check('switch: saves the choice', (await preference()) === 'ja', await preference());
+check('switch: the page is Japanese', (await htmlLang()) === 'ja', await htmlLang());
+check('switch: marks the current language', (await ev(`document.querySelector('[data-language-switch] [aria-current=page]').dataset.language`)) === 'ja');
+check('preference: restored on a later visit', await go(pageUrl(null)) && (await htmlLang()) === 'ja', await htmlLang());
+
+await setPreference(null);
+check('gallery: starts in Chinese', await go(pageUrl('zh-CN')) && (await htmlLang()) === 'zh-CN');
+const demoUrl = await ev(`document.querySelector('.card .acts a.pill').href`);
+check('gallery: demo link keeps the language', new URL(demoUrl).searchParams.get('lang') === 'zh-CN', demoUrl);
+check('demo: follows the gallery language', await go(demoUrl) && (await htmlLang()) === 'zh-CN', await htmlLang());
+check('demo: UI text is localized', (await ev('document.title')) === 'Sakuga 按钮', await ev('document.title'));
+
+const rootUrl = new URL('../', URL_).href;
+await setBrowserLanguages(['ja-JP']);
+await setPreference(null);
+await send('Page.navigate', { url: `${rootUrl}?i18n-root-check=1` });
+check('root: redirects once to the gallery', await waitFor(`location.pathname.endsWith('/gallery/') && location.search.includes('i18n-root-check=1') && document.readyState === 'complete'`, 15000), await ev('location.href'));
+check('root: detected language reaches the gallery', (await htmlLang()) === 'ja', await htmlLang());
+check('root: no redirect loop', !(await ev('location.pathname')).includes('gallery/gallery'), await ev('location.pathname'));
+if (navScript) await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: navScript });
 await finish();

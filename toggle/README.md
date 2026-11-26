@@ -31,7 +31,7 @@ el.flip();            // from code, with the animation
 | `disabled` | can't be flipped | off |
 
 - The shadow button has `role="switch"`. Space and Enter flip it, and `aria-checked` reflects the current value.
-- The hit area is 108 × 54 CSS pixels. The default margins reserve 89 pixels above, 20 below and 21 on each side for the effects.
+- The hit area is 108 × 54 CSS pixels, centred in a 108 × 182 host so the switch lines up with other controls. About 64 pixels above and below (plus 21 on each side) are left for the effects.
 - A user activation or `flip()` animates the switch and dispatches a bubbling `change` event. Setting `checked` renders the requested state immediately.
 - A form reset restores the switch's initial checked state. A disabled switch or fieldset blocks activation and form submission for the control.
 
