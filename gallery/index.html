@@ -7,7 +7,7 @@
 <script src="../i18n.js"></script>
 <link rel="stylesheet" href="../i18n.css">
 <style>
-  :root { --page: #ffffff; --text: #1d1a4a; --mute: #8580b0; --line: #dcdaf0; --chip: #f4f3fc; }
+  :root { --page: #ffffff; --text: #1d1a4a; --mute: #8580b0; --line: #dcdaf0; }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; overflow-x: clip; background: var(--page); }
   body { margin: 0; color: var(--text); background: var(--page); font: 500 15px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: clip; transition: background .2s, color .2s; }
@@ -25,15 +25,13 @@
   .card { display: flex; flex-direction: column; min-width: 0; border: 1.5px solid var(--line); border-radius: 18px; }
   .card.wide { grid-column: span 2; }
   .card h2 { margin: 0; padding: 14px 16px 0; font-size: 15px; font-weight: 700; }
-  .card h2 span { margin-left: 6px; color: var(--mute); font-weight: 500; }
   .card .how { margin: 2px 0 0; padding: 0 16px; color: var(--mute); font-size: 13px; }
   .stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-height: 230px; padding: 24px 16px; }
   .stage.row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 22px; }
   .said { min-height: 1.45em; margin: 0; padding: 0 16px; color: var(--mute); font-size: 13px; text-align: center; }
   .acts { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 14px; border-top: 1.5px solid var(--line); margin-top: 10px; }
   .acts .pill { height: 30px; font-size: 12.5px; }
-  .note { margin: 40px 0 0; color: var(--mute); font-size: 13px; }
-  .note code { padding: 1px 5px; border-radius: 5px; background: var(--chip); font-size: 12.5px; }
+  .pill svg { width: 16px; height: 16px; flex: none; fill: currentColor; }
   .toastwrap { position: relative; display: grid; justify-items: center; gap: 22px; }
   @media (max-width: 680px) { .card.wide { grid-column: auto; } }
 </style>
@@ -56,14 +54,13 @@
       <h1>Sakuga VFX</h1>
       <p class="lede" data-zh="12 个演示让日常控件像动画一样回应操作：它们会变形、回弹，还会带起烟雾、冲击波、水花和斩击，配上漫画拟声字。每个组件都是一个独立文件，无需依赖。" data-ja="おなじみの UI がアニメのように反応する 12 のデモ。操作に合わせてつぶれたり跳ね返ったりし、煙や衝撃波、水しぶき、斬撃に漫画風の描き文字が重なります。各コンポーネントは依存関係のない単一ファイルです。">Twelve demos of ordinary controls that react like anime: squash and overshoot on springs, and drawn effects (smoke, impact bursts, splashes, slashes) with manga sound-effect lettering. Each component is a single file with no dependencies.</p>
       <p class="links">
-        <a class="pill" href="https://github.com/finktheartist/sakuga-vfx" target="_blank" rel="noopener"><span data-zh="上游项目" data-ja="元のプロジェクト">Upstream project</span> <span aria-hidden="true">&#8599;</span></a>
-        <a class="pill" href="../LICENSE" download data-zh="MIT 许可证" data-ja="MIT ライセンス">MIT license</a>
+        <a class="pill" href="https://github.com/chenlongapps/sakuga-vfx-i18n" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span data-zh="GitHub 仓库" data-ja="GitHub リポジトリ">GitHub</span></a>
+        <a class="pill" href="https://github.com/chenlongapps/sakuga-vfx-i18n/blob/main/LICENSE" target="_blank" rel="noopener" data-zh="MIT 许可证" data-ja="MIT ライセンス">MIT license</a>
       </p>
     </div>
     <nav data-language-switch></nav>
   </header>
   <main class="grid" id="grid"></main>
-  <p class="note"><span data-zh="所有特效都绘制在覆盖页面的同一张画布上；开启 " data-ja="エフェクトはページに重ねた 1 枚のキャンバスに描画されます。">Effects are drawn on one canvas over the page and switch off for </span><code>prefers-reduced-motion</code><span data-zh=" 后会关闭特效。你可以覆盖 " data-ja=" が有効な場合、エフェクトは無効になります。配色は "> . Every colour is a </span><code>--sk-*</code><span data-zh=" 变量来调整配色。" data-ja=" の CSS 変数を上書きして変更できます。"> variable you can override.</span></p>
 </div>
 <script>
 // The gallery: every control live on one page, with its standalone source file.
@@ -100,7 +97,7 @@ for (const it of ITEMS) {
   const sourceUrl = `../${it.id}/${it.id}.js`;
   const tag = `sakuga-${it.id}`;
   const card = document.createElement('section'); card.className = 'card' + (it.wide ? ' wide' : '');
-  card.innerHTML = `<h2>${it.name}<span>&lt;${tag}&gt;</span></h2><p class="how">${it.how}</p><div class="stage">${it.html}</div><p class="said" aria-live="polite"></p>
+  card.innerHTML = `<h2>${it.name}</h2><p class="how">${it.how}</p><div class="stage">${it.html}</div><p class="said" aria-live="polite"></p>
     <div class="acts"><a class="pill" href="${link(`../${it.id}/`)}">${text('Docs and demo', '文档与演示', 'ドキュメントとデモ')}</a><a class="pill" href="${sourceUrl}" download>${text('Download .js', '下载 .js', '.js をダウンロード')}</a><button class="pill" type="button" data-copy-source>${text('Copy source', '复制源码', 'ソースをコピー')}</button></div>`;
   const said = card.querySelector('.said');
   card.querySelector('[data-copy-source]').addEventListener('click', async (event) => {
