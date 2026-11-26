@@ -1,0 +1,245 @@
+{
+  "generated": "2026-11-26T13:37:04.027Z",
+  "format": "animated WebP",
+  "fps": 24,
+  "duration": 4.5,
+  "width": 480,
+  "height": 308,
+  "languages": [
+    "en",
+    "zh-CN",
+    "ja"
+  ],
+  "demos": [
+    "button",
+    "button-secondary",
+    "toggle",
+    "slider",
+    "checkbox",
+    "radio",
+    "input",
+    "tabs",
+    "progress",
+    "rating",
+    "toast",
+    "tooltip"
+  ],
+  "files": [
+    {
+      "id": "button",
+      "lang": "en",
+      "path": "docs/webp/button.en.webp",
+      "bytes": 219962
+    },
+    {
+      "id": "button",
+      "lang": "zh-CN",
+      "path": "docs/webp/button.zh-CN.webp",
+      "bytes": 218738
+    },
+    {
+      "id": "button",
+      "lang": "ja",
+      "path": "docs/webp/button.ja.webp",
+      "bytes": 200712
+    },
+    {
+      "id": "button-secondary",
+      "lang": "en",
+      "path": "docs/webp/button-secondary.en.webp",
+      "bytes": 34832
+    },
+    {
+      "id": "button-secondary",
+      "lang": "zh-CN",
+      "path": "docs/webp/button-secondary.zh-CN.webp",
+      "bytes": 33342
+    },
+    {
+      "id": "button-secondary",
+      "lang": "ja",
+      "path": "docs/webp/button-secondary.ja.webp",
+      "bytes": 41760
+    },
+    {
+      "id": "toggle",
+      "lang": "en",
+      "path": "docs/webp/toggle.en.webp",
+      "bytes": 86246
+    },
+    {
+      "id": "toggle",
+      "lang": "zh-CN",
+      "path": "docs/webp/toggle.zh-CN.webp",
+      "bytes": 87818
+    },
+    {
+      "id": "toggle",
+      "lang": "ja",
+      "path": "docs/webp/toggle.ja.webp",
+      "bytes": 85546
+    },
+    {
+      "id": "slider",
+      "lang": "en",
+      "path": "docs/webp/slider.en.webp",
+      "bytes": 247416
+    },
+    {
+      "id": "slider",
+      "lang": "zh-CN",
+      "path": "docs/webp/slider.zh-CN.webp",
+      "bytes": 253690
+    },
+    {
+      "id": "slider",
+      "lang": "ja",
+      "path": "docs/webp/slider.ja.webp",
+      "bytes": 265384
+    },
+    {
+      "id": "checkbox",
+      "lang": "en",
+      "path": "docs/webp/checkbox.en.webp",
+      "bytes": 76492
+    },
+    {
+      "id": "checkbox",
+      "lang": "zh-CN",
+      "path": "docs/webp/checkbox.zh-CN.webp",
+      "bytes": 85944
+    },
+    {
+      "id": "checkbox",
+      "lang": "ja",
+      "path": "docs/webp/checkbox.ja.webp",
+      "bytes": 87594
+    },
+    {
+      "id": "radio",
+      "lang": "en",
+      "path": "docs/webp/radio.en.webp",
+      "bytes": 46538
+    },
+    {
+      "id": "radio",
+      "lang": "zh-CN",
+      "path": "docs/webp/radio.zh-CN.webp",
+      "bytes": 49304
+    },
+    {
+      "id": "radio",
+      "lang": "ja",
+      "path": "docs/webp/radio.ja.webp",
+      "bytes": 47222
+    },
+    {
+      "id": "input",
+      "lang": "en",
+      "path": "docs/webp/input.en.webp",
+      "bytes": 57876
+    },
+    {
+      "id": "input",
+      "lang": "zh-CN",
+      "path": "docs/webp/input.zh-CN.webp",
+      "bytes": 42372
+    },
+    {
+      "id": "input",
+      "lang": "ja",
+      "path": "docs/webp/input.ja.webp",
+      "bytes": 54874
+    },
+    {
+      "id": "tabs",
+      "lang": "en",
+      "path": "docs/webp/tabs.en.webp",
+      "bytes": 22466
+    },
+    {
+      "id": "tabs",
+      "lang": "zh-CN",
+      "path": "docs/webp/tabs.zh-CN.webp",
+      "bytes": 22418
+    },
+    {
+      "id": "tabs",
+      "lang": "ja",
+      "path": "docs/webp/tabs.ja.webp",
+      "bytes": 22226
+    },
+    {
+      "id": "progress",
+      "lang": "en",
+      "path": "docs/webp/progress.en.webp",
+      "bytes": 537666
+    },
+    {
+      "id": "progress",
+      "lang": "zh-CN",
+      "path": "docs/webp/progress.zh-CN.webp",
+      "bytes": 589512
+    },
+    {
+      "id": "progress",
+      "lang": "ja",
+      "path": "docs/webp/progress.ja.webp",
+      "bytes": 530984
+    },
+    {
+      "id": "rating",
+      "lang": "en",
+      "path": "docs/webp/rating.en.webp",
+      "bytes": 206770
+    },
+    {
+      "id": "rating",
+      "lang": "zh-CN",
+      "path": "docs/webp/rating.zh-CN.webp",
+      "bytes": 216562
+    },
+    {
+      "id": "rating",
+      "lang": "ja",
+      "path": "docs/webp/rating.ja.webp",
+      "bytes": 200268
+    },
+    {
+      "id": "toast",
+      "lang": "en",
+      "path": "docs/webp/toast.en.webp",
+      "bytes": 121128
+    },
+    {
+      "id": "toast",
+      "lang": "zh-CN",
+      "path": "docs/webp/toast.zh-CN.webp",
+      "bytes": 137200
+    },
+    {
+      "id": "toast",
+      "lang": "ja",
+      "path": "docs/webp/toast.ja.webp",
+      "bytes": 134706
+    },
+    {
+      "id": "tooltip",
+      "lang": "en",
+      "path": "docs/webp/tooltip.en.webp",
+      "bytes": 91368
+    },
+    {
+      "id": "tooltip",
+      "lang": "zh-CN",
+      "path": "docs/webp/tooltip.zh-CN.webp",
+      "bytes": 99200
+    },
+    {
+      "id": "tooltip",
+      "lang": "ja",
+      "path": "docs/webp/tooltip.ja.webp",
+      "bytes": 97126
+    }
+  ]
+}

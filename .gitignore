@@ -6,3 +6,6 @@ node_modules/
 
 # macOS metadata
 .DS_Store
+
+# Temporary recording frames (only with --keep-frames)
+docs/webp/frames/
