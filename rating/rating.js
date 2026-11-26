@@ -22,7 +22,15 @@ class SakugaRating extends fx.Base {
   get disabled() { return this.hasAttribute('disabled'); }
   set disabled(v) { this.toggleAttribute('disabled', !!v); }
   attributeChangedCallback(name, _, v) { if (!this.btns) return; if (name === 'value') this.value = v; else for (const b of this.btns) b.disabled = this.disabled; }
-  render() { return `<div class="stars" role="radiogroup" part="stars" aria-label="${esc(this.getAttribute('label') || 'Rating')}">${[1, 2, 3, 4, 5].map((n) => `<button type="button" role="radio" part="star" aria-checked="false" tabindex="-1" aria-label="${n} star${n > 1 ? 's' : ''}"${this.disabled ? ' disabled' : ''}>${STAR}</button>`).join('')}</div>`; }
+  render() {
+    const groupLabel = esc(this.getAttribute('label') || 'Rating');
+    const starLabel = this.getAttribute('star-label');
+    const stars = [1, 2, 3, 4, 5].map((n) => {
+      const label = starLabel ? starLabel.replaceAll('{n}', n) : `${n} star${n > 1 ? 's' : ''}`;
+      return `<button type="button" role="radio" part="star" aria-checked="false" tabindex="-1" aria-label="${esc(label)}"${this.disabled ? ' disabled' : ''}>${STAR}</button>`;
+    }).join('');
+    return `<div class="stars" role="radiogroup" part="stars" aria-label="${groupLabel}">${stars}</div>`;
+  }
   set(n, quiet) {
     const was = this.score; this.score = n; this.internals.setFormValue(n ? String(n) : null);
     this.btns.forEach((b, i) => {

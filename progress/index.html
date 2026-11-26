@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sakuga Progress</title>
+<title data-zh="Sakuga 进度条" data-ja="Sakuga プログレスバー">Sakuga Progress</title>
+<script src="../i18n.js"></script>
+<link rel="stylesheet" href="../i18n.css">
 <style>
   :root { --page: #ffffff; --text: #1d1a4a; --mute: #8580b0; }
   html { overflow-x: clip; background: var(--page); }
@@ -21,23 +23,24 @@
 </head>
 <body>
 <main>
-  <h1>Progress</h1>
-  <p class="sub">A loading bar with a storm cloud riding its edge.</p>
+  <nav data-language-switch></nav>
+  <h1 data-zh="进度条" data-ja="プログレスバー">Progress</h1>
+  <p class="sub" data-zh="一团风暴云会跟着加载进度条向前移动。" data-ja="プログレスバーの先端に雷雲が乗って進みます。">A loading bar with a storm cloud riding its edge.</p>
   <div class="stage">
-  <sakuga-progress id="el" demo label="Loading"></sakuga-progress>
+  <sakuga-progress id="el" demo label="Loading" data-i18n-label="loading" data-i18n-done-label="complete"></sakuga-progress>
   </div>
-  <p class="hint">It plays a pretend load in surges. Click it to start again, or drag the slider under it to drive it yourself.</p>
-  <label class="drive" id="drive" hidden>Progress <input type="range" min="0" max="100" value="0"></label>
+  <p class="hint" data-zh="演示会模拟分段加载。点击进度条可重新开始，也可以拖动下方的滑块手动调整。" data-ja="読み込みが加速と減速を繰り返すデモです。バーをクリックすると最初から再生でき、下のスライダーで進捗を調整できます。">It plays a pretend load in surges. Click it to start again, or drag the slider under it to drive it yourself.</p>
+  <label class="drive" id="drive" hidden><span data-i18n="progress">Progress</span> <input type="range" min="0" max="100" value="0"></label>
   <p class="said" aria-live="polite"></p>
 </main>
+<script>
+const { t, localize } = sakugaSite;
+localize();
+const el = document.getElementById('el'), said = document.querySelector('.said');
+el.addEventListener('sakuga:done', () => { said.textContent = t('loadingDone'); });
+</script>
 <script src="progress.js"></script>
 <script>
-// This page's own wiring. The component is all in progress.js.
-// ?embed=1 hides the heading and the hint.
-const Q = new URLSearchParams(location.search), el = document.getElementById('el'), el2 = document.getElementById('el2');
-if (Q.get('embed') === '1') document.documentElement.classList.add('embed');
-const say = (t) => { document.querySelector('.said').textContent = t; };
-el.addEventListener('sakuga:done', () => say('sakuga:done'));
 const drive = document.getElementById('drive');
 drive.hidden = false; drive.querySelector('input').addEventListener('input', (e) => { el.removeAttribute('demo'); el.set(e.target.value / 100); });
 </script>

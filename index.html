@@ -1,5 +1,18 @@
 <!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <title>Sakuga VFX</title>
-<meta http-equiv="refresh" content="0; url=gallery/">
-<a href="gallery/">Open the gallery</a>
+<script src="i18n.js"></script>
+<noscript><meta http-equiv="refresh" content="0; url=gallery/"></noscript>
+</head>
+<body>
+<a id="gallery-link" href="gallery/" data-zh="打开组件图库" data-ja="コンポーネントギャラリーを開く">Open the gallery</a>
+<script>
+sakugaSite.localize();
+const galleryLink = document.getElementById('gallery-link');
+galleryLink.href = sakugaSite.link(`gallery/${location.search}${location.hash}`);
+location.replace(galleryLink.href);
+</script>
+</body>
+</html>

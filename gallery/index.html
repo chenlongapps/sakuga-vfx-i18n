@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sakuga VFX</title>
+<title data-zh="Sakuga VFX 组件图库" data-ja="Sakuga VFX コンポーネントギャラリー">Sakuga VFX</title>
+<script src="../i18n.js"></script>
+<link rel="stylesheet" href="../i18n.css">
 <style>
   :root { --page: #ffffff; --text: #1d1a4a; --mute: #8580b0; --line: #dcdaf0; --chip: #f4f3fc; }
   * { box-sizing: border-box; }
@@ -19,13 +21,13 @@
   .pill { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 13px; border: 1.5px solid var(--line); border-radius: 999px; background: none; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; }
   .pill:hover { border-color: var(--text); }
   :focus-visible { outline: 2.5px solid #ff5fa8; outline-offset: 3px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 28px; grid-auto-flow: dense; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 18px; margin-top: 28px; grid-auto-flow: dense; }
   .card { display: flex; flex-direction: column; min-width: 0; border: 1.5px solid var(--line); border-radius: 18px; }
   .card.wide { grid-column: span 2; }
   .card h2 { margin: 0; padding: 14px 16px 0; font-size: 15px; font-weight: 700; }
   .card h2 span { margin-left: 6px; color: var(--mute); font-weight: 500; }
   .card .how { margin: 2px 0 0; padding: 0 16px; color: var(--mute); font-size: 13px; }
-  .stage { flex: 1; display: grid; place-items: center; min-height: 230px; padding: 24px 16px; }
+  .stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-height: 230px; padding: 24px 16px; }
   .stage.row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 22px; }
   .said { min-height: 1.45em; margin: 0; padding: 0 16px; color: var(--mute); font-size: 13px; text-align: center; }
   .acts { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 14px; border-top: 1.5px solid var(--line); margin-top: 10px; }
@@ -35,122 +37,115 @@
   .toastwrap { position: relative; display: grid; justify-items: center; gap: 22px; }
   @media (max-width: 680px) { .card.wide { grid-column: auto; } }
 </style>
+<script src="../button/button.js" defer></script>
+<script src="../toggle/toggle.js" defer></script>
+<script src="../slider/slider.js" defer></script>
+<script src="../checkbox/checkbox.js" defer></script>
+<script src="../radio/radio.js" defer></script>
+<script src="../input/input.js" defer></script>
+<script src="../tabs/tabs.js" defer></script>
+<script src="../progress/progress.js" defer></script>
+<script src="../rating/rating.js" defer></script>
+<script src="../toast/toast.js" defer></script>
+<script src="../tooltip/tooltip.js" defer></script>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div>
       <h1>Sakuga VFX</h1>
-      <p class="lede">Twelve ordinary controls that react like anime: squash and overshoot on springs, and drawn effects (smoke, impact bursts, splashes, slashes) with manga sound-effect lettering. Each one is a single file with no dependencies.</p>
+      <p class="lede" data-zh="12 个演示让日常控件像动画一样回应操作：它们会变形、回弹，还会带起烟雾、冲击波、水花和斩击，配上漫画拟声字。每个组件都是一个独立文件，无需依赖。" data-ja="おなじみの UI がアニメのように反応する 12 のデモ。操作に合わせてつぶれたり跳ね返ったりし、煙や衝撃波、水しぶき、斬撃に漫画風の描き文字が重なります。各コンポーネントは依存関係のない単一ファイルです。">Twelve demos of ordinary controls that react like anime: squash and overshoot on springs, and drawn effects (smoke, impact bursts, splashes, slashes) with manga sound-effect lettering. Each component is a single file with no dependencies.</p>
       <p class="links">
-        <a class="pill" href="https://github.com/finktheartist/sakuga-vfx" target="_blank" rel="noopener">The repo on GitHub <span aria-hidden="true">&#8599;</span></a>
-        <a class="pill" href="https://x.com/crtvTeknologist" target="_blank" rel="noopener">@crtvTeknologist on X <span aria-hidden="true">&#8599;</span></a>
+        <a class="pill" href="https://github.com/finktheartist/sakuga-vfx" target="_blank" rel="noopener"><span data-zh="上游项目" data-ja="元のプロジェクト">Upstream project</span> <span aria-hidden="true">&#8599;</span></a>
+        <a class="pill" href="../LICENSE" download data-zh="MIT 许可证" data-ja="MIT ライセンス">MIT license</a>
       </p>
     </div>
+    <nav data-language-switch></nav>
   </header>
   <main class="grid" id="grid"></main>
-  <p class="note">Effects are drawn on one canvas over the page and switch off for <code>prefers-reduced-motion</code>. Every colour is a <code>--sk-*</code> variable you can override.</p>
+  <p class="note"><span data-zh="所有特效都绘制在覆盖页面的同一张画布上；开启 " data-ja="エフェクトはページに重ねた 1 枚のキャンバスに描画されます。">Effects are drawn on one canvas over the page and switch off for </span><code>prefers-reduced-motion</code><span data-zh=" 后会关闭特效。你可以覆盖 " data-ja=" が有効な場合、エフェクトは無効になります。配色は "> . Every colour is a </span><code>--sk-*</code><span data-zh=" 变量来调整配色。" data-ja=" の CSS 変数を上書きして変更できます。"> variable you can override.</span></p>
 </div>
-<script src="../button/button.js"></script>
-<script src="../toggle/toggle.js"></script>
-<script src="../slider/slider.js"></script>
-<script src="../checkbox/checkbox.js"></script>
-<script src="../radio/radio.js"></script>
-<script src="../input/input.js"></script>
-<script src="../tabs/tabs.js"></script>
-<script src="../progress/progress.js"></script>
-<script src="../rating/rating.js"></script>
-<script src="../toast/toast.js"></script>
-<script src="../tooltip/tooltip.js"></script>
 <script>
-// The gallery: every control live on one page, with its install line and a prompt that hands a coding agent the real file.
-const REPO = 'finktheartist/sakuga-vfx';
+// The gallery: every control live on one page, with its standalone source file.
+const { text, t, link, localize } = sakugaSite;
 const ITEMS = [
-  { id: 'button', name: 'Primary button', tag: 'sakuga-button', how: 'Click it.', html: '<sakuga-button data-demo="primary">Confirm</sakuga-button>' },
-  { id: 'button', name: 'Secondary button', tag: 'sakuga-button', how: 'Click it.', html: '<sakuga-button variant="secondary">Cancel</sakuga-button>' },
-  { id: 'toggle', name: 'Toggle', tag: 'sakuga-toggle', how: 'Flip it, then flip it back.', html: '<sakuga-toggle label="Notifications"></sakuga-toggle>' },
-  { id: 'slider', name: 'Slider', tag: 'sakuga-slider', how: 'Drag it fast, and let go while it is moving.', html: '<sakuga-slider value="30" label="Volume"></sakuga-slider>' },
-  { id: 'checkbox', name: 'Checkbox', tag: 'sakuga-checkbox', how: 'Tick it.', html: '<sakuga-checkbox>Remember me</sakuga-checkbox>' },
-  { id: 'radio', name: 'Radio', tag: 'sakuga-radio', how: 'Pick the other one.', html: '<sakuga-radio label="Plan"><option value="a" selected>Option A</option><option value="b">Option B</option></sakuga-radio>' },
-  { id: 'input', name: 'Text input', tag: 'sakuga-input', how: 'Click it and type.', html: '<sakuga-input label="Text" placeholder="Type something"></sakuga-input>' },
-  { id: 'tabs', name: 'Tabs', tag: 'sakuga-tabs', how: 'Pick another tab, or use the arrow keys.', html: '<sakuga-tabs label="Sections"><option>Home</option><option>Profile</option><option>Settings</option></sakuga-tabs>' },
-  { id: 'progress', name: 'Progress', tag: 'sakuga-progress', how: 'It plays a load by itself, in surges. Click it to start again.', html: '<sakuga-progress demo label="Loading"></sakuga-progress>', wide: true },
-  { id: 'rating', name: 'Rating', tag: 'sakuga-rating', how: 'Give it five.', html: '<sakuga-rating label="Rating"></sakuga-rating>' },
-  { id: 'toast', name: 'Toast', tag: 'sakuga-toast', how: 'Press Save.', html: '<div class="toastwrap"><sakuga-button variant="secondary" data-demo="save">Save</sakuga-button><sakuga-toast></sakuga-toast></div>' },
-  { id: 'tooltip', name: 'Tooltip', tag: 'sakuga-tooltip', how: 'Hover, focus or tap the button.', html: '<sakuga-tooltip text="Helpful hint!"></sakuga-tooltip>' },
+  { id: 'button', name: text('Primary button', '主按钮', 'プライマリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
+    html: '<sakuga-button data-demo="primary" data-i18n="confirm">Confirm</sakuga-button>' },
+  { id: 'button', name: text('Secondary button', '次要按钮', 'セカンダリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
+    html: '<sakuga-button variant="secondary" data-i18n="cancel">Cancel</sakuga-button>' },
+  { id: 'toggle', name: text('Toggle', '开关', 'トグルスイッチ'), how: text('Flip it, then flip it back.', '打开开关，再关上。', 'スイッチをオンにしてから、オフに戻してみてください。'),
+    html: '<sakuga-toggle label="Notifications" data-i18n-label="notifications"></sakuga-toggle>' },
+  { id: 'slider', name: text('Slider', '滑块', 'スライダー'), how: text('Drag it fast, and let go while it is moving.', '快速拖动滑块，在它移动时松手。', 'つまみをすばやくドラッグし、動かしながら離してみてください。'),
+    html: '<sakuga-slider value="30" label="Volume" data-i18n-label="volume"></sakuga-slider>' },
+  { id: 'checkbox', name: text('Checkbox', '复选框', 'チェックボックス'), how: text('Tick it.', '勾选复选框。', 'チェックを入れてみてください。'),
+    html: '<sakuga-checkbox data-i18n="rememberMe">Remember me</sakuga-checkbox>' },
+  { id: 'radio', name: text('Radio', '单选框', 'ラジオボタン'), how: text('Pick the other one.', '选择另一个选项。', 'もう一方の選択肢を選んでみてください。'),
+    html: '<sakuga-radio label="Plan" data-i18n-label="plan"><option value="a" selected data-i18n="optionA">Option A</option><option value="b" data-i18n="optionB">Option B</option></sakuga-radio>' },
+  { id: 'input', name: text('Text input', '文本输入框', 'テキスト入力欄'), how: text('Click it and type.', '点击输入框并输入文字。', '入力欄をクリックして文字を入力してください。'),
+    html: '<sakuga-input label="Text" placeholder="Type something" data-i18n-label="inputText" data-i18n-placeholder="inputPlaceholder"></sakuga-input>' },
+  { id: 'tabs', name: text('Tabs', '选项卡', 'タブ'), how: text('Pick another tab, or use the arrow keys.', '点击其他选项卡，或用方向键切换。', '別のタブを選ぶか、矢印キーで切り替えてください。'),
+    html: '<sakuga-tabs label="Sections" data-i18n-label="sections"><option value="Home" data-i18n="home">Home</option><option value="Profile" data-i18n="profile">Profile</option><option value="Settings" data-i18n="settings">Settings</option></sakuga-tabs>' },
+  { id: 'progress', name: text('Progress', '进度', 'プログレスバー'), how: text('It plays a load by itself, in surges. Click it to start again.', '进度条会自动分段前进，点击可重新开始。', '読み込みが進む様子を自動で再生します。クリックすると最初からやり直せます。'),
+    html: '<sakuga-progress demo label="Loading" data-i18n-label="loading" data-i18n-done-label="complete"></sakuga-progress>', wide: true },
+  { id: 'rating', name: t('rating'), how: text('Give it five.', '试试点亮五颗星。', '星を 5 つ付けてみてください。'),
+    html: '<sakuga-rating label="Rating" data-i18n-label="rating" data-i18n-star-label="starLabel"></sakuga-rating>' },
+  { id: 'toast', name: text('Toast', '轻提示', 'トースト通知'), how: text('Press Save.', '点击「保存」。', '「保存」を押してください。'),
+    html: '<div class="toastwrap"><sakuga-button variant="secondary" data-demo="save" data-i18n="save">Save</sakuga-button><sakuga-toast data-i18n-dismiss-label="dismiss"></sakuga-toast></div>' },
+  { id: 'tooltip', name: text('Tooltip', '工具提示', 'ツールチップ'), how: text('Hover, focus or tap the button.', '将鼠标悬停在按钮上、用键盘聚焦，或轻触按钮。', 'ボタンにマウスを重ねるか、フォーカスするか、タップしてください。'),
+    html: '<sakuga-tooltip text="Helpful hint!" data-i18n-text="helpfulHint" data-i18n-label="help"></sakuga-tooltip>' },
 ];
-
-// What each prompt says about wiring its component in. The rest of the prompt is the same for all of them.
-const WIRE = {
-  button: ['Use <sakuga-button>Confirm</sakuga-button> where my main button is, and <sakuga-button variant="secondary">Cancel</sakuga-button> for a quieter one. The text inside is the label.',
-    'Listen for click on the element as usual. For a submit button inside a form, add type="submit". The disabled attribute works like a button\'s.',
-    'When the action has actually succeeded, call el.done() to land a check on the button. Do not call it for a failure.'],
-  toggle: ['Use <sakuga-toggle label="..."></sakuga-toggle> where my switch is. The label is what a screen reader hears, so name the setting.',
-    'Read el.checked and listen for change. With a name attribute it is sent with its form like a checkbox (value "on", or the value attribute).',
-    'Setting el.checked from code jumps to the end without the animation; only a person flipping it plays it. The drawing is bigger than the switch, so the element keeps a margin around it for the splash.'],
-  slider: ['Use <sakuga-slider value="30" label="..."></sakuga-slider> where my slider is. min, max, step and unit (shown after the number, "%" by default) work as attributes.',
-    'Read el.value. It fires input while it moves and change when it is let go. With a name attribute it is sent with its form.',
-    'It is 230 pixels wide; set the --sk-slider-width CSS variable to change that. It keeps 30 pixels above it for the value bubble.'],
-  checkbox: ['Use <sakuga-checkbox>Remember me</sakuga-checkbox>. The text inside is the label.', 'Read el.checked and listen for change. With a name attribute it is sent with its form like a checkbox.'],
-  radio: ['List the choices as <option>s inside it: <sakuga-radio label="Plan"><option value="a" selected>Option A</option><option value="b">Option B</option></sakuga-radio>. The label is what a screen reader hears for the group.',
-    'Read el.value and listen for change. With a name attribute it is sent with its form.'],
-  input: ['Use <sakuga-input label="..." placeholder="..."></sakuga-input> where my text field is. type can be text, email, search, url, tel or password.',
-    'Read and set el.value. It fires input and change like a text input. With a name attribute it is sent with its form.',
-    'It is 230 pixels wide; set the --sk-input-width CSS variable to change that.'],
-  tabs: ['List the tabs as <option>s inside it: <sakuga-tabs label="..."><option value="home">Home</option>...</sakuga-tabs>.',
-    'It only draws the tabs. Listen for change (e.detail has index, value and label) and show the matching panel yourself. el.selected is the index; setting it moves the tab without the landing effects.'],
-  progress: ['Put <sakuga-progress label="..."></sakuga-progress> where my progress bar is. The label is what a screen reader hears, so say what is loading.',
-    'Wire it to my real task: call el.set(n) with progress from 0 to 1 as often as it changes. The bar eases toward the number, so a jump is still ridden. el.set(n, true) goes straight there.',
-    'Listen for the "sakuga:done" event and move on from there. It fires once, when the bar itself reaches the end, a moment after my task finishes. el.reset() puts it back to 0.',
-    'With the demo attribute it plays a pretend load on a loop. Do not ship it with that attribute.',
-    'It is 280 pixels wide (set --sk-progress-width to change it) and keeps 70 pixels above the bar for the cloud and about 110 below for the ground and the percentage.'],
-  rating: ['Use <sakuga-rating label="..."></sakuga-rating>.', 'Read el.value (0 to 5) and listen for change. Clicking the lit star again clears it. With a name attribute it is sent with its form.'],
-  toast: ['Put <sakuga-toast></sakuga-toast> where my toasts should appear, and call el.show("Saved") when there is something to say. It is a status region, so the message is read out.',
-    'It stays for the duration attribute (2.6 seconds by default), or until el.hide(). It has a close button.',
-    'The element keeps its place on the page while the toast is hidden. Position it yourself, for example position: fixed; left: 24px; bottom: 24px.'],
-  tooltip: ['Use <sakuga-tooltip text="..." label="..."></sakuga-tooltip> next to the thing it explains. text is the hint; label is what a screen reader calls the button ("Help" by default).',
-    'It opens on hover, focus and tap, and Escape closes it. Whatever is inside the element replaces the "?" on the button.'],
-};
-const SKILL = { url: new URL('../skills/sakuga-vfx/SKILL.md', location.href).href, install: `npx skills add ${REPO}` };
-const fileUrl = (id) => new URL(`../${id}/${id}.js`, location.href).href;
-const prompt = (it) => [
-  `Add the Sakuga ${it.name.toLowerCase()} to my app. It is a single JavaScript file with no dependencies that defines a <${it.tag}> element.`,
-  `1. Get the file from ${fileUrl(it.id)} and save it in my project as ${it.id}.js. Do not rewrite it or split it up.`,
-  `2. Load it with a plain script tag (not type="module").`,
-  ...WIRE[it.id].map((l, i) => `${i + 3}. ${l}`),
-  `${WIRE[it.id].length + 3}. Its effects are drawn on one fixed canvas over the page, so they can fly outside the control. They switch off for prefers-reduced-motion. Its colours are --sk-* CSS variables.`,
-  `When you are done, show me where you put it and what listens to it. If something about it needs to look different, tell me instead of editing the effects.`,
-  ``,
-  `These components were made with my sakuga-vfx skill: ${SKILL.url}`,
-  `If you can install skills, install it with: ${SKILL.install}`,
-  `Read it before you start. For this job, follow its "Wire it in" and "Check it" sections. If I later ask you to change how it reacts, or to make another control in the same style, use the whole skill.`,
-].join('\n');
 
 const grid = document.getElementById('grid');
 for (const it of ITEMS) {
+  const sourceUrl = `../${it.id}/${it.id}.js`;
+  const tag = `sakuga-${it.id}`;
   const card = document.createElement('section'); card.className = 'card' + (it.wide ? ' wide' : '');
-  card.innerHTML = `<h2>${it.name}<span>&lt;${it.tag}&gt;</span></h2><p class="how">${it.how}</p><div class="stage">${it.html}</div><p class="said" aria-live="polite"></p>
-    <div class="acts"><a class="pill" href="../${it.id}/">Docs and demo</a><button class="pill" type="button" data-copy="cmd">Copy install</button><button class="pill" type="button" data-copy="prompt">Copy a prompt for your agent</button></div>`;
+  card.innerHTML = `<h2>${it.name}<span>&lt;${tag}&gt;</span></h2><p class="how">${it.how}</p><div class="stage">${it.html}</div><p class="said" aria-live="polite"></p>
+    <div class="acts"><a class="pill" href="${link(`../${it.id}/`)}">${text('Docs and demo', '文档与演示', 'ドキュメントとデモ')}</a><a class="pill" href="${sourceUrl}" download>${text('Download .js', '下载 .js', '.js をダウンロード')}</a><button class="pill" type="button" data-copy-source>${text('Copy source', '复制源码', 'ソースをコピー')}</button></div>`;
   const said = card.querySelector('.said');
-  card.querySelector('[data-copy=cmd]').addEventListener('click', (e) => copy(`npx shadcn add ${REPO}/${it.id}`, e.currentTarget, said));
-  card.querySelector('[data-copy=prompt]').addEventListener('click', (e) => copy(prompt(it), e.currentTarget, said));
+  card.querySelector('[data-copy-source]').addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    try {
+      const response = await fetch(sourceUrl);
+      if (!response.ok) throw new Error(`Could not load ${sourceUrl}`);
+      await copy(await response.text(), button);
+      said.textContent = text('Component source copied.', '已复制组件源码。', 'コンポーネントのソースをコピーしました。');
+    } catch {
+      said.textContent = text('Could not copy. Use Download .js instead.', '复制失败，请使用「下载 .js」。', 'コピーできませんでした。「.js をダウンロード」をお試しください。');
+    }
+  });
   grid.append(card);
-  const el = card.querySelector(it.tag), say = (t) => { said.textContent = t; };   // the one line under each control that says what happened
-  if (it.tag === 'sakuga-button' && el.dataset.demo === 'primary') el.addEventListener('click', () => { say('Clicked'); setTimeout(() => el.done(), 760); });
-  else if (it.tag === 'sakuga-button') el.addEventListener('click', () => say('Clicked'));
-  else if (it.tag === 'sakuga-toast') card.querySelector('[data-demo=save]').addEventListener('click', () => el.show('Saved successfully!'));
-  else if (it.tag === 'sakuga-progress') el.addEventListener('sakuga:done', () => say('sakuga:done'));
-  else if (it.tag === 'sakuga-tabs') el.addEventListener('change', (e) => say(`Tab: ${e.detail.label}`));
-  else el.addEventListener('change', () => say(`change: ${it.tag === 'sakuga-toggle' || it.tag === 'sakuga-checkbox' ? (el.checked ? 'on' : 'off') : el.value}`));
+  const el = card.querySelector(tag), say = (key, value) => { said.textContent = t(key, value); };
+  if (it.id === 'button' && el.dataset.demo === 'primary') el.addEventListener('click', () => { say('clicked'); setTimeout(() => el.done(), 760); });
+  else if (it.id === 'button') el.addEventListener('click', () => say('canceled'));
+  else if (it.id === 'toast') card.querySelector('[data-demo=save]').addEventListener('click', () => el.show(t('saved')));
+  else if (it.id === 'progress') el.addEventListener('sakuga:done', () => say('loadingDone'));
+  else if (it.id === 'tabs') el.addEventListener('change', (e) => say('tabChanged', e.detail.label));
+  else if (it.id === 'toggle') el.addEventListener('change', () => say(el.checked ? 'on' : 'off'));
+  else if (it.id === 'checkbox') el.addEventListener('change', () => say(el.checked ? 'checked' : 'unchecked'));
+  else if (it.id === 'radio') el.addEventListener('change', () => say('optionChanged', el.querySelector(`option[value="${el.value}"]`).textContent));
+  else if (it.id === 'rating') el.addEventListener('change', () => say('ratingChanged', el.value));
+  else if (it.id === 'slider' || it.id === 'input') el.addEventListener('change', () => say('valueChanged', el.value));
 }
-// Copying needs the clipboard API, which plain http (other than localhost) does not have, so fall back to a selected textarea.
-async function copy(text, btn, said) {
-  let ok = false;
-  try { await navigator.clipboard.writeText(text); ok = true; } catch {
-    const t = Object.assign(document.createElement('textarea'), { value: text }); t.style.cssText = 'position:fixed;opacity:0'; document.body.append(t); t.select();
-    try { ok = document.execCommand('copy'); } catch {} t.remove();
+localize();
+
+// Plain HTTP can fall back to copying a selected textarea when the Clipboard API is unavailable.
+async function copy(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const restoreFocus = document.activeElement === button;
+    const field = Object.assign(document.createElement('textarea'), { value: text });
+    field.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(field);
+    field.select();
+    try {
+      if (!document.execCommand('copy')) throw new Error('Clipboard unavailable');
+    } finally {
+      field.remove();
+      if (restoreFocus) button.focus({ preventScroll: true });
+    }
   }
-  said.textContent = ok ? (btn.dataset.copy === 'cmd' ? 'Install command copied' : 'Prompt copied') : 'Could not copy here';
 }
 </script>
 </body>

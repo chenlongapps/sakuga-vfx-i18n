@@ -1,0 +1,5 @@
+[data-language-switch] { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; }
+main > [data-language-switch] { margin-bottom: 12px; }
+[data-language-switch] a { color: inherit; text-underline-offset: .2em; }
+[data-language-switch] [aria-current="page"] { font-weight: 800; }
+.embed main > [data-language-switch] { display: none; }

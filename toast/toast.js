@@ -18,7 +18,10 @@ class SakugaToast extends fx.Base {
     .msg { overflow: hidden; text-overflow: ellipsis; }
     .x { margin-left: auto; flex: none; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 50%; background: none; font-weight: 900; font-size: 15px; cursor: pointer; }`;
   get open() { return this.state > 0 && this.state < 3; }
-  render() { return `<div class="toast" part="toast"><span class="ic" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M3.5 10.5l4.5 4.5 8.5-10"/></svg></span><span class="msg" role="status"></span><button class="x" type="button" part="close" aria-label="Dismiss">✕</button></div>`; }
+  render() {
+    const label = esc(this.getAttribute('dismiss-label') || 'Dismiss');
+    return `<div class="toast" part="toast"><span class="ic" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M3.5 10.5l4.5 4.5 8.5-10"/></svg></span><span class="msg" role="status"></span><button class="x" type="button" part="close" aria-label="${label}">✕</button></div>`;
+  }
   setup() {
     this.toast = this.$('.toast'); this.msg = this.$('.msg'); this.sx = new Spring(-280, 280, 18); this.ss = new Spring(1, 420, 26); this.state = 0; this.at0 = 0; this.t = 0;
     this.$('.x').addEventListener('click', () => this.hide());

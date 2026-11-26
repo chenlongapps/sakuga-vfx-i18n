@@ -1,2 +1,8 @@
-.vercel
-node_modules
+# Local dependencies
+node_modules/
+
+# Vercel local state
+.vercel/
+
+# macOS metadata
+.DS_Store

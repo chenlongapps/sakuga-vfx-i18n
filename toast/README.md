@@ -26,6 +26,7 @@ el.open;    // true while it is showing
 |---|---|---|
 | `duration` | seconds it stays | 2.6 |
 | `message` | the words when `show()` is given none | Saved successfully! |
+| `dismiss-label` | accessible name of the ✕ button | Dismiss |
 
 - **Put the element where the toast should be.** It is 236 by 56 pixels and keeps that space while hidden; position it yourself, usually fixed in a corner.
 - **The message is in a `role="status"` region,** so a screen reader reads it out. The ✕ is a real button.

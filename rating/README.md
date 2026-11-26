@@ -24,6 +24,7 @@ el.value = 3;   // from code: no effects
 | attribute | what it sets | default |
 |---|---|---|
 | `label` | what a screen reader calls the group | Rating |
+| `star-label` | accessible label template for each star; `{n}` is replaced with 1–5 (for example, `{n} 星`) | 1 star, 2 stars, … |
 | `value` | 0 to 5 | 0 |
 | `name` | sent with its form (nothing when 0) | none |
 | `disabled` | can't be changed | off |
