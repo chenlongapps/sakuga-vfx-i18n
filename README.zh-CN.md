@@ -2,7 +2,7 @@
 
 [English](README.md) · 简体中文 · [日本語](README.ja.md)
 
-Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持简洁；按压、拖动或切换时会变形、回弹，带起烟雾、冲击波、碎晶、水花等特效，并配上「ドン!」「カチッ」「ズザッ」等漫画拟声字。
+Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持简洁。按压、拖动或切换时会变形、回弹，带起烟雾、冲击波、碎晶、水花等特效，并配上「轰！」「咔哒」「唰！」等漫画拟声字。
 
 所有特效由代码绘制在页面共用的画布上。拟声字路径和开关的 43 帧动画都内嵌在组件文件中。每个组件都是独立的 JavaScript 文件，无需安装依赖或执行构建，采用 MIT 许可证。
 
@@ -30,7 +30,7 @@ Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持
 
 ## 演示
 
-在 GitHub Pages 打开 **[简体中文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)**、[英文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)或[日文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)。切换语言后可直接分享地址；从「文档与演示」进入组件页时会保留当前语言。首版在三种语言中均使用原版日文拟声字。
+在 GitHub Pages 打开 **[简体中文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)**、[英文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)或[日文图库](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)。语言切换同时应用于界面与拟声字。从「文档与演示」进入组件页时，地址会保留当前语言。
 
 如需在本地试用，在仓库根目录运行：
 
@@ -58,6 +58,8 @@ python3 -m http.server 8000
 上表链接的组件文档列出了属性、方法和事件。开关、滑块、复选框、单选框、输入框和星级评分都可在 `<form>` 中使用；设置 `name` 后，它们的值会随表单提交。
 
 每个文件内嵌一份共享核心。页面加载多个组件时，后加载的组件会复用首个脚本创建的 `window.SakugaFX`，共用一张画布和一个动画循环。
+
+独立使用组件时，将页面的 `<html lang>` 设置为 `zh-CN`、`en` 或 `ja`。特效触发时读取当前语言。未设置语言或当前语言缺少对应字形时，使用日文原版。素材生成、检查与矢量化步骤见[素材说明](art/words/README.md)。
 
 ## 致谢与许可
 

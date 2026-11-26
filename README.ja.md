@@ -30,7 +30,7 @@ Sakuga VFX は、おなじみの UI にアニメのような手応えを加え�
 
 ## デモ
 
-GitHub Pages のギャラリーを **[日本語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)**、[英語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)、[簡体字中国語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)で開けます。言語を切り替えた URL はそのまま共有でき、「ドキュメントとデモ」からコンポーネントのページを開いても言語が引き継がれます。初回リリースでは、どの言語でも元の日本語の描き文字を使っています。
+GitHub Pages のギャラリーを **[日本語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)**、[英語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)、[簡体字中国語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN)で開けます。言語を切り替えると、画面の表示と描き文字の両方に反映されます。「ドキュメントとデモ」からコンポーネントのページを開いても、URL に選択した言語が引き継がれます。
 
 ローカルで試すには、リポジトリのルートで次を実行してください。
 
@@ -58,6 +58,8 @@ python3 -m http.server 8000
 属性・メソッド・イベントは、表からリンクしている各コンポーネントの README を参照してください。トグルスイッチ、スライダー、チェックボックス、ラジオボタン、テキスト入力欄、星評価は `<form>` の中で使えます。`name` を設定すると、値がフォームと一緒に送信されます。
 
 各ファイルにはエフェクトの共通コードが含まれます。複数のコンポーネントを読み込むと、最初のファイルが作った `window.SakugaFX` が再利用され、キャンバスとアニメーションループが共有されます。
+
+コンポーネントを単独で使う場合は、ページの `<html lang>` に `ja`、`en`、`zh-CN` のいずれかを指定します。エフェクトが始まるたびに現在の言語を参照します。言語が未指定の場合や対応する描き文字がない場合は、日本語の原版を使います。素材の生成、確認、パスへの変換手順は[素材ガイド](art/words/README.md)を参照してください。
 
 ## 謝辞とライセンス
 

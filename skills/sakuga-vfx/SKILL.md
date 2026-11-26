@@ -28,6 +28,7 @@ Load `core.js` and everything is on `window.SakugaFX`:
 
 - **Motion:** `new Spring(x, stiffness, damping)`, then set `.to` and call `.step(dt)` every frame. `squashy(button, { low, wide })` gives a press that squashes while held and overshoots on release; call its `step(dt)` in `frame()`.
 - **Effects,** all in page coordinates (use `at(el, fx, fy)` to get a point on an element): `burst` (the impact star), `puff` (a smoke puff), `donut` (a smoke ring), `shards` (crystal chips), `slash` (a crescent), `lines` (speed lines), `ticks` (accent wedges), `ring`, `splash`, `kira` (a glint), `wob` (wobble marks), and `sfx(word, x, y, { size })`; pass `...hollow()` or `...dotted()` to `sfx` for the two lettering styles.
+- **Lettering language.** Set the page’s `<html lang>` to `en`, `zh-CN`, or `ja`. `sfx()` reads it at the start of each effect and uses the original Japanese glyph when the selected language has no matching sprite.
 - **Timing:** `later(ms, fn)` runs on the shared clock, not on `setTimeout`, so `look.mjs` can step it. Use it for every delay.
 - **The base class:** extend `Base`, give it `static css`, `render()` (the shadow HTML), `setup()` (listeners, springs) and `frame(dt)`. `backLayer()` gives a canvas inside the element, behind the control, for an effect that must sit behind it (pass `{ layer }` to `burst`). `static formAssociated = true` gets `this.internals` for forms.
 - **Colours:** `P` is the effects palette. In CSS use the `--sk-*` variables (`--sk-ink`, `--sk-card`, `--sk-pri`, `--sk-acc`, `--sk-sh`, ...).

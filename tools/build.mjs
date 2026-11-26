@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const NAMES = ['button', 'toggle', 'slider', 'checkbox', 'radio', 'input', 'tabs', 'progress', 'rating', 'toast', 'tooltip'];
 const check = process.argv.includes('--check');
-const core = readFileSync(join(root, 'core.js'), 'utf8').trim();
+const coreSource = readFileSync(join(root, 'core.js'), 'utf8');
+const core = coreSource.trim();
 const sheet = 'data:image/webp;base64,' + readFileSync(join(root, 'toggle/frames.webp')).toString('base64');
 const between = (src, name, body, file) => {
   const re = new RegExp(`(// >>> ${name}[^\\n]*\\n)[\\s\\S]*?(// <<< ${name})`);
@@ -22,5 +23,11 @@ for (const n of NAMES) {
   if (n === 'toggle') src = between(src, 'frames', `const SHEET = '${sheet}';`, file);
   if (src !== was) { stale++; if (!check) writeFileSync(file, src); console.log(`${check ? 'stale' : 'wrote'} ${n}/${n}.js`); }
 }
-if (!check) copyFileSync(join(root, 'core.js'), join(root, 'skills/sakuga-vfx/core.js'));
+const skillCore = 'skills/sakuga-vfx/core.js';
+if (check) {
+  if (readFileSync(join(root, skillCore), 'utf8') !== coreSource) {
+    stale++;
+    console.log(`stale ${skillCore}`);
+  }
+} else copyFileSync(join(root, 'core.js'), join(root, skillCore));
 if (check && stale) process.exit(1);

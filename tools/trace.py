@@ -1,4 +1,4 @@
-# Trace the lettering sprites in art/words/ into SVG path data and write them into core.js, between the WORDS markers.
+# Trace the lettering sprites in art/words/<lang>/ into SVG paths and write them into core.js between the WORDS markers.
 # The sprites are solid shapes on transparency, so tracing them loses nothing and the components carry no image files.
 #
 #   uv run --with potracer --with pillow --with numpy python tools/trace.py
@@ -7,12 +7,11 @@ from pathlib import Path
 import numpy as np, potrace
 from PIL import Image
 
-root = Path(__file__).resolve().parent.parent
-words = {}
-for f in sorted((root / 'art/words').glob('*.webp')):
-    a = np.array(Image.open(f).convert('RGBA'))
-    h, w = a.shape[:2]
-    m = a[..., 3] <= 128                     # potracer traces the False pixels
+def trace(file):
+    with Image.open(file) as sprite:
+        w, h = sprite.size
+        alpha = np.array(sprite.convert('RGBA').getchannel('A'))
+    m = alpha <= 128                        # potracer traces the False pixels
     path = potrace.Bitmap(m).trace(turdsize=8, alphamax=1.0, opticurve=True, opttolerance=0.5)
     n = lambda v: str(int(round(v)))
     p = lambda q: n(q.x) + ' ' + n(q.y)
@@ -22,12 +21,26 @@ for f in sorted((root / 'art/words').glob('*.webp')):
         for s in c.segments:
             d.append(('L' + p(s.c) + 'L' + p(s.end_point)) if s.is_corner else ('C' + p(s.c1) + ' ' + p(s.c2) + ' ' + p(s.end_point)))
         d.append('Z')
-    words[f.stem] = [w, h, re.sub(r' -', '-', ''.join(d))]
-    print(f.stem, w, h, len(words[f.stem][2]), file=sys.stderr)
+    return [w, h, re.sub(r' -', '-', ''.join(d))]
+
+
+root = Path(__file__).resolve().parent.parent
+words = {}
+for folder in sorted((root / 'art/words').glob('*/')):
+    for file in sorted(folder.glob('*.webp')):
+        w, h, path = trace(file)
+        words.setdefault(folder.name, {})[file.stem] = [w, h, path]
+        print(f'{folder.name}/{file.stem}', w, h, len(path), file=sys.stderr)
+if 'ja' not in words:
+    sys.exit('no Japanese fallback sprites in art/words/ja/')
 
 core = root / 'core.js'
 src = core.read_text()
-block = 'const WORDS = ' + json.dumps(words, separators=(',', ':')) + ';'
+locales = []
+for lang, entries in words.items():
+    rows = [f'    {json.dumps(name)}: {json.dumps(data, separators=(",", ":"))}' for name, data in entries.items()]
+    locales.append(f'  {json.dumps(lang)}: {{\n' + ',\n'.join(rows) + '\n  }')
+block = 'const WORDS = {\n' + ',\n'.join(locales) + '\n};'
 src, k = re.subn(r'(// >>> words.*?\n).*?(\n\s*// <<< words)', lambda m: m.group(1) + block + m.group(2), src, flags=re.S)
 if not k: sys.exit('no WORDS markers in core.js')
 core.write_text(src)
