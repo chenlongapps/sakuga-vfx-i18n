@@ -17,10 +17,32 @@ let id = 0; const pending = new Map(), logs = [];
 ws.addEventListener('message', (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } if (m.method === 'Runtime.exceptionThrown') logs.push('EXC ' + (m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text)); });
 const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, (m) => (m.error ? rej(new Error(`${method}: ${m.error.message}`)) : res(m.result))); ws.send(JSON.stringify({ id: i, method, params })); });
 const ev = async (expr) => (await send('Runtime.evaluate', { expression: expr, returnByValue: true })).result.value;
+let fails = 0;
+const check = (name, ok, got) => { if (!ok) fails++; console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${got !== undefined ? `  ->  ${got}` : ''}`); };
+async function finish() {
+  if (logs.length) { console.log(logs.join('\n')); fails++; }
+  ws.close(); chrome.kill(); await sleep(300); try { rmSync(PROFILE, { recursive: true, force: true }); } catch {}
+  process.exit(fails ? 1 : 0);
+}
+
 await send('Runtime.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 900, deviceScaleFactor: 2, mobile: true });
 await send('Emulation.setTouchEmulationEnabled', { enabled: true });
-await send('Page.enable'); await send('Page.navigate', { url: URL_ }); await sleep(1800);
+await send('Page.enable');
+const { errorText } = await send('Page.navigate', { url: URL_ });
+const deadline = Date.now() + 15000;
+let loaded = false;
+while (!errorText && Date.now() < deadline) {
+  loaded = await ev(`location.href !== 'about:blank' && document.readyState === 'complete'`);
+  if (loaded) break;
+  await sleep(100);
+}
+check('gallery finished loading', loaded, loaded ? undefined : (errorText || URL_));
+if (!loaded) await finish();
+
+const missing = await ev(`['button','toggle','slider','checkbox','radio','input','tabs','progress','rating','toast','tooltip'].filter((n) => !customElements.get('sakuga-' + n))`);
+check('all eleven elements are defined', missing.length === 0, missing.length ? missing.join(', ') : undefined);
+if (missing.length) await finish();
 
 // "tag >>> selector" reaches into the element's shadow root
 const find = (s) => { const [host, inner] = s.split(' >>> '); return inner ? `document.querySelector(${JSON.stringify(host)}).shadowRoot.querySelector(${JSON.stringify(inner)})` : `document.querySelector(${JSON.stringify(host)})`; };
@@ -29,10 +51,7 @@ const touch = (type, x, y) => send('Input.dispatchTouchEvent', { type, touchPoin
 const tap = async (s, fx, fy) => { const [x, y] = await at(s, fx, fy); await sleep(150); await touch('touchStart', x, y); await touch('touchEnd', x, y); };
 const key = async (k, code) => { await send('Input.dispatchKeyEvent', { type: 'keyDown', key: k, code: k, windowsVirtualKeyCode: code }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key: k, code: k, windowsVirtualKeyCode: code }); };
 const type = async (text) => { for (const ch of text) { await send('Input.dispatchKeyEvent', { type: 'keyDown', key: ch, text: ch }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key: ch }); await sleep(40); } };
-let fails = 0;
-const check = (name, ok, got) => { if (!ok) fails++; console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${got !== undefined ? `  ->  ${got}` : ''}`); };
 
-check('all eleven elements are defined', (await ev(`['button','toggle','slider','checkbox','radio','input','tabs','progress','rating','toast','tooltip'].every((n) => customElements.get('sakuga-' + n))`)));
 check('one shared core', (await ev('window.SakugaFX.version')) === 1);
 { await tap('sakuga-button[data-demo=primary] >>> .btn'); await sleep(1200); check('button: tap fires click and done() lands the check', +(await ev(`${find('sakuga-button[data-demo=primary] >>> .btn')}.style.getPropertyValue('--ok')`)) > 0.5); }
 { await tap('sakuga-toggle >>> .tog'); await sleep(500); check('toggle: tap turns it on', await ev(`document.querySelector('sakuga-toggle').checked`));
@@ -57,5 +76,4 @@ check('one shared core', (await ev('window.SakugaFX.version')) === 1);
 { await ev(`(() => { const f = document.createElement('form'); f.id = 'tf'; f.innerHTML = '<sakuga-checkbox name="c" checked></sakuga-checkbox><sakuga-slider name="s" value="42"></sakuga-slider><sakuga-rating name="r" value="3"></sakuga-rating><sakuga-toggle name="t" checked></sakuga-toggle>'; document.body.append(f); })()`); await sleep(300);
   check('forms: values are sent with a form', (await ev(`new URLSearchParams(new FormData(document.getElementById('tf'))).toString()`)) === 'c=on&s=42&r=3&t=on', await ev(`new URLSearchParams(new FormData(document.getElementById('tf'))).toString()`)); }
 check('no horizontal scroll at 390', (await ev('document.documentElement.scrollWidth')) <= 390, await ev('document.documentElement.scrollWidth'));
-if (logs.length) { console.log(logs.join('\n')); fails++; }
-ws.close(); chrome.kill(); await sleep(300); try { rmSync(PROFILE, { recursive: true, force: true }); } catch {} process.exit(fails ? 1 : 0);
+await finish();
