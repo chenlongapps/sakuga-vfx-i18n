@@ -1,8 +1,6 @@
 # Toggle
 
-A switch whose flip is a drawn animation, not a simulation. Turn it on and the knob smears across the track with a torn tail, slams into the end and throws up a splash crown, and the track floods, sloshes and settles with a glint. Turn it off and the dash plays back.
-
-The 43 frames were painted with GPT Image (through Higgsfield) from a sheet of twelve keyframes, in three parts of 16 frames, aligned on the housing and played at 30 a second. They are inside `toggle.js` as one sprite sheet, so there is still only one file.
+The switch squashes under a press, then the knob stretches and leaves an inked trail. On opening, a curled sheet of water rises behind the knob and throws off rounded drops. The crest folds back into the track as it fills. On closing, the liquid recedes and the opposite end throws a lower wave with sharper, sideways fragments. Both impacts show a localized `kachi` and end with a glint.
 
 ## Run it
 
@@ -32,16 +30,15 @@ el.flip();            // from code, with the animation
 | `name`, `value` | sent with its form when on, like a checkbox | value `on` |
 | `disabled` | can't be flipped | off |
 
-- **It is a `role="switch"` button** inside a shadow root, so Space and Enter flip it and `aria-checked` follows.
-- **It takes more room than it looks.** The switch is 108 by 54 pixels, but the drawing is 150 by 162 and the splash rises above it, so the element has a margin of 89 pixels above, 20 below and 21 at the sides. Override `margin` if you know your layout has the room.
-- **Only a person flipping it plays the drawing.** Setting `checked` from code goes straight to the end.
+- The shadow button has `role="switch"`. Space and Enter flip it, and `aria-checked` reflects the current value.
+- The hit area is 108 × 54 CSS pixels. The default margins reserve 89 pixels above, 20 below and 21 on each side for the effects.
+- A user activation or `flip()` animates the switch and dispatches a bubbling `change` event. Setting `checked` renders the requested state immediately.
+- A form reset restores the switch's initial checked state. A disabled switch or fieldset blocks activation and form submission for the control.
 
-## The frames
+## Rendering and theming
 
-`toggle/frames.webp` is the sheet (8 across, 300 by 325 pixels each, 346 KB). `node tools/build.mjs` writes it into `toggle.js`. The originals were 480 by 520; they were halved here, which is still twice the size they are shown at.
-
-## Limits
-
-- **It is about 500 KB,** most of it the frames. The other components are about 45 KB.
-- **The art is painted,** so the `--sk-*` colours do not reach it.
-- **Reduced motion** skips to the last frame.
+- Canvas 2D paths draw the housing, dial, smear, and liquid. Springs use elapsed time from the common `requestAnimationFrame` clock, so quick flips preserve the current position and momentum.
+- Set `<html lang>` to `en`, `zh-CN`, or `ja` to choose the impact lettering.
+- Theme the drawing with `--sk-ink` for outlines, `--sk-card` and `--sk-soft` for the dial, `--sk-track` for the empty track, `--sk-pri` for the liquid, and `--sk-acc` for the impact lettering and focus ring. Shared particles use the project's effects palette.
+- With reduced motion enabled, the switch updates immediately and skips the effects.
+- The standalone script is about 100 KiB, including the shared core and lettering.

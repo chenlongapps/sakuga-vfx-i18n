@@ -4,7 +4,7 @@
 
 Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持简洁。按压、拖动或切换时会变形、回弹，带起烟雾、冲击波、碎晶、水花等特效，并配上「轰！」「咔哒」「唰！」等漫画拟声字。
 
-所有特效由代码绘制在页面共用的画布上。拟声字路径和开关的 43 帧动画都内嵌在组件文件中。每个组件都是独立的 JavaScript 文件，无需安装依赖或执行构建，采用 MIT 许可证。
+特效由 Canvas 2D 实时绘制，拟声字路径内嵌在组件文件中。开关用弹簧和矢量路径绘制拨钮、拖尾及轨道液体。每个组件都是独立的 JavaScript 文件，无需安装依赖或执行构建，采用 MIT 许可证。
 
 本项目基于 Justin Finkelman 的 [Sakuga VFX](https://github.com/finktheartist/sakuga-vfx)，为图库和组件独立演示提供简体中文、英文和日文。
 
@@ -15,7 +15,7 @@ Sakuga VFX 为日常网页控件加上动画般的反馈。控件静止时保持
 | 组件 | 元素 | 动效 |
 |---|---|---|
 | [按钮](button/README.md) | `<sakuga-button>` | 按下时压扁，松手时闪现冲击波、烟雾和「ドン!」。调用 `done()` 后会出现对勾。 |
-| [开关](toggle/README.md) | `<sakuga-toggle>` | 拨钮快速滑向另一侧，撞到边缘时溅起水花，轨道随后填满颜色。 |
+| [开关](toggle/README.md) | `<sakuga-toggle>` | 拨钮拉出拖尾，撞到两端时溅起水花并弹回，伴随本地化拟声字。开启时液体涌入，关闭时液体回抽。 |
 | [滑块](slider/README.md) | `<sakuga-slider>` | 滑块被拉成长水滴状；快速拖动会带起云雾，松手则甩出一道弧线。 |
 | [复选框](checkbox/README.md) | `<sakuga-checkbox>` | 勾选时划出弧光，带起碎晶，对勾随之绘出。 |
 | [单选框](radio/README.md) | `<sakuga-radio>` | 选中的圆点弹入，带起烟雾和「ポン」。 |

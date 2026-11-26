@@ -4,7 +4,7 @@ English · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
 
 Ordinary UI controls that react like anime. At rest they are plain. Use one and it squashes and overshoots on springs, surrounded by smoke puffs, impact bursts, crystal chips, slashes, splashes and smoke rings. Manga sound-effect lettering such as `BOOM!`, `CLICK!`, and `SKRR!` is available in English, Simplified Chinese, and Japanese.
 
-Every effect is drawn in code on one canvas over the page. The lettering was painted with GPT Image and traced to paths, and the toggle is 43 painted frames; both live inside the component files, so there is nothing else to fetch. No dependencies, no build step for you, MIT licensed.
+The components draw their effects in code with Canvas 2D. The lettering was painted with GPT Image, traced to paths, and embedded in each file. Each component is a standalone script with no dependencies or build step. The project is MIT licensed.
 
 This fork of Justin Finkelman's [Sakuga VFX](https://github.com/finktheartist/sakuga-vfx) provides the gallery and standalone demos in English, Simplified Chinese, and Japanese.
 
@@ -15,7 +15,7 @@ The gallery has 12 demos of 11 components, including two button variants.
 | Component | Element | What happens |
 |---|---|---|
 | [Button](button/README.md) | `<sakuga-button>` | Press and it squashes flat. Let go and it inverts for one frame, a burst goes off behind it, clouds roll off the corners and `BOOM!` lands. `done()` puts a check on it. The secondary variant is a small squash and three wedges. |
-| [Toggle](toggle/README.md) | `<sakuga-toggle>` | A drawn animation: the knob smears across, slams into the end and throws up a splash, and the track floods and settles. |
+| [Toggle](toggle/README.md) | `<sakuga-toggle>` | The knob stretches into a smear and rebounds at either end with a splash and a localized impact word. The liquid floods on opening and rushes back on closing. |
 | [Slider](slider/README.md) | `<sakuga-slider>` | The thumb stretches into a teardrop and lags on a spring. Drag fast and cumulus rolls up behind it; let go and a crescent flies on ahead. |
 | [Checkbox](checkbox/README.md) | `<sakuga-checkbox>` | Two crescents swing round the box, crystals fly, the tick draws itself, `SKRR!` in dotted letters. |
 | [Radio](radio/README.md) | `<sakuga-radio>` | The dot springs in with a fan of wedges, two puffs and a hollow `POP!`. |
@@ -61,13 +61,12 @@ Each folder's README lists the attributes, properties and events. The value cont
 
 For standalone use, set the page’s `<html lang>` to `en`, `zh-CN`, or `ja`. Each effect reads the language when triggered. If the language is unset or its lettering is unavailable for that effect, the original Japanese lettering is used.
 
-**How the files share.** Each file carries its own copy of the core, including the springs, effects layer, and all lettering paths. The first one loaded sets `window.SakugaFX` and the others reuse it, so any mix of them on a page shares one canvas and one animation loop. The toggle also embeds its animation frames.
+**How the files share.** Each file carries its own copy of the core, including the springs, effects layer, and all lettering paths. The first one loaded sets `window.SakugaFX` and the others reuse its effects canvas and animation loop. The toggle draws its housing, knob, and liquid on a small canvas inside the switch.
 
 ## Working on this repo
 
 - `core.js` is the source of the shared core. After editing it, run `node tools/build.mjs`, which copies it into every component file (between the `// >>> sakuga core` markers) and into the skill. `node tools/build.mjs --check` exits 1 if any file is out of date.
 - `art/words/<lang>/` contains the lettering sprites used at build time. See the [asset generation and tracing guide](art/words/README.md).
-- `toggle/frames.webp` is the toggle's sprite sheet (43 frames, 8 across, 300 by 325 each). The build writes it into `toggle.js`.
 - `node tools/test.mjs http://localhost:8000/gallery/` drives every control with real touch and key events at phone width, checks form values and sideways scroll, and exits 1 on a failure. `node tools/shot.mjs URL OUT W H SCALE` takes a full-page screenshot. Both need Chrome or Chromium (`CHROME=...` if it is somewhere unusual).
 
 ## Limits

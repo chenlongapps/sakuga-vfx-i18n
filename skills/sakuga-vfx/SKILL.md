@@ -44,7 +44,7 @@ These are the corrections that came up most.
 - **Effects follow speed.** A slow drag is quiet. Fire the big stuff on the release, the landing, or the moment of change.
 - **Pink is for accents.** Wedges, needles and the check are the accent colour; everything else is ink and paper.
 - **The control is plain at rest.** No idle animation, and nothing drawn around it until it is used.
-- **To match a drawn reference, generate frames from it.** The toggle is 43 frames painted with an image model from a sheet of keyframes, aligned on the housing and played at 30 a second. Simulating a morphing liquid in code did not get close; drawing it did.
+- **Use the body’s velocity to shape smears and liquid.** The toggle stretches its Canvas paths with knob speed, folds the liquid surface with a separate spring, and triggers particles and lettering when the knob hits an end.
 - **Reduced motion.** The core already drops every effect when `prefers-reduced-motion` is set. Make sure the state still changes.
 
 ## 4. Look before you say it is done
