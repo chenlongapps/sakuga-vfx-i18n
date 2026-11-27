@@ -30,7 +30,11 @@
   .stage.row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 22px; }
   .said { min-height: 1.45em; margin: 0; padding: 0 16px; color: var(--mute); font-size: 13px; text-align: center; }
   .acts { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 14px; border-top: 1.5px solid var(--line); margin-top: 10px; }
-  .acts .pill { height: 30px; font-size: 12.5px; }
+  .acts .pill { height: 30px; min-height: 30px; padding: 0 12px; font-size: 12.5px; white-space: nowrap; }
+  .acts .pill.ai { border-color: #ff5fa8; background: #fff5f9; color: #b0185f; }
+  .acts .pill.ai:hover { border-color: #b0185f; background: #ffe9f3; }
+  #copy-toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); z-index: 40; width: min(340px, calc(100vw - 32px)); transform: translateX(-50%); pointer-events: none; }
+  #copy-toast::part(toast) { width: 100%; height: auto; min-height: 56px; white-space: normal; pointer-events: auto; }
   .pill svg { width: 16px; height: 16px; flex: none; fill: currentColor; }
   .toastwrap { position: relative; display: grid; justify-items: center; gap: 22px; }
   @media (max-width: 680px) { .card.wide { grid-column: auto; } }
@@ -62,53 +66,168 @@
   </header>
   <main class="grid" id="grid"></main>
 </div>
+<sakuga-toast id="copy-toast" data-i18n-dismiss-label="dismiss"></sakuga-toast>
 <script>
 // The gallery: every control live on one page, with its standalone source file.
 const { text, t, link, localize } = sakugaSite;
 const ITEMS = [
-  { id: 'button', name: text('Primary button', '主按钮', 'プライマリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
+  { id: 'button', component: 'Button', variant: 'primary', name: text('Primary button', '主按钮', 'プライマリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
     html: '<sakuga-button data-demo="primary" data-i18n="confirm">Confirm</sakuga-button>' },
-  { id: 'button', name: text('Secondary button', '次要按钮', 'セカンダリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
+  { id: 'button', component: 'Button', variant: 'secondary', name: text('Secondary button', '次要按钮', 'セカンダリボタン'), how: text('Click it.', '点击按钮。', 'ボタンを押してみてください。'),
     html: '<sakuga-button variant="secondary" data-i18n="cancel">Cancel</sakuga-button>' },
-  { id: 'toggle', name: text('Toggle', '开关', 'トグルスイッチ'), how: text('Flip it, then flip it back.', '打开开关，再关上。', 'スイッチをオンにしてから、オフに戻してみてください。'),
+  { id: 'toggle', component: 'Toggle', name: text('Toggle', '开关', 'トグルスイッチ'), how: text('Flip it, then flip it back.', '打开开关，再关上。', 'スイッチをオンにしてから、オフに戻してみてください。'),
     html: '<sakuga-toggle label="Notifications" data-i18n-label="notifications"></sakuga-toggle>' },
-  { id: 'slider', name: text('Slider', '滑块', 'スライダー'), how: text('Drag it fast, and let go while it is moving.', '快速拖动滑块，在它移动时松手。', 'つまみをすばやくドラッグし、動かしながら離してみてください。'),
+  { id: 'slider', component: 'Slider', name: text('Slider', '滑块', 'スライダー'), how: text('Drag it fast, and let go while it is moving.', '快速拖动滑块，在它移动时松手。', 'つまみをすばやくドラッグし、動かしながら離してみてください。'),
     html: '<sakuga-slider value="30" label="Volume" data-i18n-label="volume"></sakuga-slider>' },
-  { id: 'checkbox', name: text('Checkbox', '复选框', 'チェックボックス'), how: text('Tick it.', '勾选复选框。', 'チェックを入れてみてください。'),
+  { id: 'checkbox', component: 'Checkbox', name: text('Checkbox', '复选框', 'チェックボックス'), how: text('Tick it.', '勾选复选框。', 'チェックを入れてみてください。'),
     html: '<sakuga-checkbox data-i18n="rememberMe">Remember me</sakuga-checkbox>' },
-  { id: 'radio', name: text('Radio', '单选框', 'ラジオボタン'), how: text('Pick the other one.', '选择另一个选项。', 'もう一方の選択肢を選んでみてください。'),
+  { id: 'radio', component: 'Radio', name: text('Radio', '单选框', 'ラジオボタン'), how: text('Pick the other one.', '选择另一个选项。', 'もう一方の選択肢を選んでみてください。'),
     html: '<sakuga-radio label="Plan" data-i18n-label="plan"><option value="a" selected data-i18n="optionA">Option A</option><option value="b" data-i18n="optionB">Option B</option></sakuga-radio>' },
-  { id: 'input', name: text('Text input', '文本输入框', 'テキスト入力欄'), how: text('Click it and type.', '点击输入框并输入文字。', '入力欄をクリックして文字を入力してください。'),
+  { id: 'input', component: 'Input', name: text('Text input', '文本输入框', 'テキスト入力欄'), how: text('Click it and type.', '点击输入框并输入文字。', '入力欄をクリックして文字を入力してください。'),
     html: '<sakuga-input label="Text" placeholder="Type something" data-i18n-label="inputText" data-i18n-placeholder="inputPlaceholder"></sakuga-input>' },
-  { id: 'tabs', name: text('Tabs', '选项卡', 'タブ'), how: text('Pick another tab, or use the arrow keys.', '点击其他选项卡，或用方向键切换。', '別のタブを選ぶか、矢印キーで切り替えてください。'),
+  { id: 'tabs', component: 'Tabs', name: text('Tabs', '选项卡', 'タブ'), how: text('Pick another tab, or use the arrow keys.', '点击其他选项卡，或用方向键切换。', '別のタブを選ぶか、矢印キーで切り替えてください。'),
     html: '<sakuga-tabs label="Sections" data-i18n-label="sections"><option value="Home" data-i18n="home">Home</option><option value="Profile" data-i18n="profile">Profile</option><option value="Settings" data-i18n="settings">Settings</option></sakuga-tabs>' },
-  { id: 'progress', name: text('Progress', '进度', 'プログレスバー'), how: text('It plays a load by itself, in surges. Click it to start again.', '进度条会自动分段前进，点击可重新开始。', '読み込みが進む様子を自動で再生します。クリックすると最初からやり直せます。'),
+  { id: 'progress', component: 'Progress', name: text('Progress', '进度', 'プログレスバー'), how: text('It plays a load by itself, in surges. Click it to start again.', '进度条会自动分段前进，点击可重新开始。', '読み込みが進む様子を自動で再生します。クリックすると最初からやり直せます。'),
     html: '<sakuga-progress demo label="Loading" data-i18n-label="loading" data-i18n-done-label="complete"></sakuga-progress>', wide: true },
-  { id: 'rating', name: t('rating'), how: text('Give it five.', '试试点亮五颗星。', '星を 5 つ付けてみてください。'),
+  { id: 'rating', component: 'Rating', name: t('rating'), how: text('Give it five.', '试试点亮五颗星。', '星を 5 つ付けてみてください。'),
     html: '<sakuga-rating label="Rating" data-i18n-label="rating" data-i18n-star-label="starLabel"></sakuga-rating>' },
-  { id: 'toast', name: text('Toast', '轻提示', 'トースト通知'), how: text('Press Save.', '点击「保存」。', '「保存」を押してください。'),
+  { id: 'toast', component: 'Toast', name: text('Toast', '轻提示', 'トースト通知'), how: text('Press Save.', '点击「保存」。', '「保存」を押してください。'),
     html: '<div class="toastwrap"><sakuga-button variant="secondary" data-demo="save" data-i18n="save">Save</sakuga-button><sakuga-toast data-i18n-dismiss-label="dismiss"></sakuga-toast></div>' },
-  { id: 'tooltip', name: text('Tooltip', '工具提示', 'ツールチップ'), how: text('Hover, focus or tap the button.', '将鼠标悬停在按钮上、用键盘聚焦，或轻触按钮。', 'ボタンにマウスを重ねるか、フォーカスするか、タップしてください。'),
+  { id: 'tooltip', component: 'Tooltip', name: text('Tooltip', '工具提示', 'ツールチップ'), how: text('Hover, focus or tap the button.', '将鼠标悬停在按钮上、用键盘聚焦，或轻触按钮。', 'ボタンにマウスを重ねるか、フォーカスするか、タップしてください。'),
     html: '<sakuga-tooltip text="Helpful hint!" data-i18n-text="helpfulHint" data-i18n-label="help"></sakuga-tooltip>' },
 ];
 
+const REPOSITORY = 'https://github.com/chenlongapps/sakuga-vfx-i18n';
+const RAW_ROOT = 'https://raw.githubusercontent.com/chenlongapps/sakuga-vfx-i18n/main';
+const DOC_FILE = sakugaSite.lang === 'zh-CN' ? 'README.zh-CN.md' : sakugaSite.lang === 'ja' ? 'README.ja.md' : 'README.md';
+const PROMPT_TEMPLATES = {
+  en: `Please integrate the Sakuga VFX {component} component into the current project.{variant}
+
+Repository:
+{repository}
+
+Skill:
+{skill}
+
+Component source:
+{source}
+
+Component docs:
+{docs}
+
+Implementation requirements:
+
+1. Read the Skill and component docs to understand how the component is used, its attributes, events and animation rules.
+2. Analyze the current project's stack, directory structure and visual style, and choose an appropriate integration approach.
+3. Fetch and reuse the original component source; do not reimplement or simplify the animations.
+4. Keep the full physics animations, Canvas effects and multilingual sound-effect lettering.
+5. Adapt to the existing project's palette, layout and business logic.
+6. Keep keyboard operation, accessibility support and reduced-motion settings.
+7. Do not add unnecessary dependencies or change code unrelated to this task.
+8. Keep the original MIT license and author attribution.
+9. Verify the component's real interactions and animations after integration.`,
+  zh: `请将 Sakuga VFX {component} 组件集成到当前项目中。{variant}
+
+项目仓库：
+{repository}
+
+Skill：
+{skill}
+
+组件源码：
+{source}
+
+组件文档：
+{docs}
+
+实现要求：
+
+1. 阅读 Skill 和组件文档，理解组件的使用方式、属性、事件及动画规范。
+2. 分析当前项目的技术栈、目录结构和视觉风格，选择合适的接入方式。
+3. 获取并复用原始组件源码，不要自行重新实现或简化动画效果。
+4. 保留完整的物理动画、Canvas 特效及多语言拟声字支持。
+5. 适配现有项目的配色、布局及业务逻辑。
+6. 保留键盘操作、无障碍支持和减少动态效果设置。
+7. 不引入不必要的依赖，不修改与当前任务无关的代码。
+8. 保留原始 MIT 许可证及作者署名。
+9. 完成接入后验证组件的实际交互与动画效果。`,
+  ja: `Sakuga VFX {component} コンポーネントを現在のプロジェクトに統合してください。{variant}
+
+リポジトリ：
+{repository}
+
+スキル：
+{skill}
+
+コンポーネントのソース：
+{source}
+
+コンポーネントのドキュメント：
+{docs}
+
+実装要件：
+
+1. スキルとコンポーネントのドキュメントを読み、使い方、属性、イベント、アニメーションの規約を理解してください。
+2. 現在のプロジェクトの技術スタック、ディレクトリ構成、ビジュアルスタイルを分析し、適切な導入方法を選んでください。
+3. 元のコンポーネントのソースを取得して再利用し、アニメーションを独自に再実装したり簡略化したりしないでください。
+4. 物理アニメーション、Canvas エフェクト、多言語の描き文字をそのまま残してください。
+5. 既存プロジェクトの配色、レイアウト、ビジネスロジックに合わせてください。
+6. キーボード操作、アクセシビリティ、prefers-reduced-motion の設定を維持してください。
+7. 不要な依存関係を追加せず、このタスクと関係のないコードを変更しないでください。
+8. 元の MIT ライセンスと作者のクレジットを残してください。
+9. 導入後にコンポーネントの実際の操作とアニメーションを確認してください。`,
+};
+
+function aiPrompt(it) {
+  const variant = it.variant && it.variant !== 'primary' ? it.variant : '';
+  const values = {
+    component: variant ? `${it.component} (${variant})` : it.component,
+    variant: variant ? text(
+      `\n\nUse the ${variant} variant, not the primary button.`,
+      `\n\n请使用 ${variant} 变体，而不是主按钮。`,
+      `\n\nprimary ボタンではなく ${variant} バリアントを使用してください。`,
+    ) : '',
+    repository: REPOSITORY,
+    skill: `${RAW_ROOT}/skills/sakuga-vfx/SKILL.md`,
+    source: `${RAW_ROOT}/${it.id}/${it.id}.js`,
+    docs: `${RAW_ROOT}/${it.id}/${DOC_FILE}`,
+  };
+  return text(PROMPT_TEMPLATES.en, PROMPT_TEMPLATES.zh, PROMPT_TEMPLATES.ja)
+    .replace(/\{(\w+)\}/g, (placeholder, key) => values[key] ?? placeholder);
+}
+
 const grid = document.getElementById('grid');
+const copyToast = document.getElementById('copy-toast');
+const showCopyToast = (message) => copyToast.show?.(message);
 for (const it of ITEMS) {
   const sourceUrl = `../${it.id}/${it.id}.js`;
   const tag = `sakuga-${it.id}`;
   const card = document.createElement('section'); card.className = 'card' + (it.wide ? ' wide' : '');
   card.innerHTML = `<h2>${it.name}</h2><p class="how">${it.how}</p><div class="stage">${it.html}</div><p class="said" aria-live="polite"></p>
-    <div class="acts"><a class="pill" href="${link(`../${it.id}/`)}">${text('Docs and demo', '文档与演示', 'ドキュメントとデモ')}</a><a class="pill" href="${sourceUrl}" download>${text('Download .js', '下载 .js', '.js をダウンロード')}</a><button class="pill" type="button" data-copy-source>${text('Copy source', '复制源码', 'ソースをコピー')}</button></div>`;
+    <div class="acts"><a class="pill" href="${link(`../${it.id}/`)}">${t('docs')}</a><button class="pill" type="button" data-copy-source>${t('copySource')}</button><button class="pill ai" type="button" data-copy-prompt>${t('copyPrompt')}</button></div>`;
   const said = card.querySelector('.said');
-  card.querySelector('[data-copy-source]').addEventListener('click', async (event) => {
-    const button = event.currentTarget;
+  const sourceButton = card.querySelector('[data-copy-source]');
+  sourceButton.addEventListener('click', async () => {
     try {
       const response = await fetch(sourceUrl);
       if (!response.ok) throw new Error(`Could not load ${sourceUrl}`);
-      await copy(await response.text(), button);
-      said.textContent = text('Component source copied.', '已复制组件源码。', 'コンポーネントのソースをコピーしました。');
+      await copy(await response.text(), sourceButton);
+      flash(sourceButton, t('copiedShort'));
+      showCopyToast(t('sourceCopied'));
     } catch {
-      said.textContent = text('Could not copy. Use Download .js instead.', '复制失败，请使用「下载 .js」。', 'コピーできませんでした。「.js をダウンロード」をお試しください。');
+      flash(sourceButton, t('copyFailed'));
+      showCopyToast(t('copyFailed'));
+    }
+  });
+  const promptButton = card.querySelector('[data-copy-prompt]');
+  promptButton.addEventListener('click', async () => {
+    try {
+      await copy(aiPrompt(it), promptButton);
+      flash(promptButton, t('promptCopied'));
+      showCopyToast(t('promptCopied'));
+    } catch {
+      flash(promptButton, t('copyFailed'));
+      showCopyToast(t('copyFailed'));
     }
   });
   grid.append(card);
@@ -125,6 +244,14 @@ for (const it of ITEMS) {
   else if (it.id === 'slider' || it.id === 'input') el.addEventListener('change', () => say('valueChanged', el.value));
 }
 localize();
+
+// Show a short confirmation on the button, then put the original label back.
+function flash(button, label) {
+  if (!button.dataset.label) button.dataset.label = button.textContent;
+  clearTimeout(button._labelTimer);
+  button.textContent = label;
+  button._labelTimer = setTimeout(() => { button.textContent = button.dataset.label; }, 1800);
+}
 
 // Plain HTTP can fall back to copying a selected textarea when the Clipboard API is unavailable.
 async function copy(text, button) {

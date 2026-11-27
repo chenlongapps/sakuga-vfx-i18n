@@ -1,5 +1,7 @@
 # Progress
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A loading bar with a storm cloud riding the leading edge. The cloud grows as the bar fills and its top drags back when the load surges; wisps tear off it and speed lines trail it. A ground line draws itself out under the bar, and pebbles lift off it as the edge passes over them. ゴゴゴゴ rumbles once it is under way. At the end a burst goes off behind the bar with ドン!, a check lands above it, and two small clouds are left on the ground.
 
 ## Run it

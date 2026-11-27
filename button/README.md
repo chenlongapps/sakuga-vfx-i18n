@@ -1,5 +1,7 @@
 # Button
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A button that reacts like an anime impact frame. Press it and it squashes flat, with wedges above it. Let go and it inverts for one frame and tilts, a spiky burst goes off behind it with crystals and four clouds, and ドン! lands above it. Then it springs tall and three smoke rings drift off. When the action has worked, `el.done()` lands a check on it with a glint.
 
 The secondary variant is quieter: a small squash and three wedges at the corner.

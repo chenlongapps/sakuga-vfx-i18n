@@ -1,5 +1,7 @@
 # Toast
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A notification that streaks in from the left as a smear, with speed lines behind it, lands in a cloud of dust with ズザッ in dotted letters, wobbles, and after a while leaves by shrinking.
 
 ## Run it

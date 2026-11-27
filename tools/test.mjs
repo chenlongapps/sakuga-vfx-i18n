@@ -91,6 +91,64 @@ const setBrowserLanguages = async (langs) => {
   const source = `Object.defineProperty(navigator, 'languages', { configurable: true, get: () => ${JSON.stringify(langs)} });`;
   navScript = (await send('Page.addScriptToEvaluateOnNewDocument', { source })).identifier;
 };
+const stubClipboard = () => ev(`(() => {
+  window.__copied = null;
+  const writeText = async (value) => { window.__copied = value; };
+  try { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } }); }
+  catch { Object.defineProperty(Clipboard.prototype, 'writeText', { configurable: true, value: writeText }); }
+})()`);
+const actionLabels = () => ev(`[...document.querySelectorAll('.card')[0].querySelectorAll('.acts .pill')].map((el) => el.textContent.trim())`);
+const clickAction = async (card, selector) => {
+  await stubClipboard();
+  await ev(`document.querySelectorAll('.card')[${card}].querySelector(${JSON.stringify(selector)}).click()`);
+  await sleep(120);
+  return ev('window.__copied');
+};
+const toastState = () => ev(`(() => {
+  const toast = document.getElementById('copy-toast');
+  return { open: !!toast.open, message: toast.shadowRoot?.querySelector('.msg')?.textContent || '' };
+})()`);
+const failClipboard = () => ev(`(() => {
+  window.__copied = null;
+  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('Clipboard unavailable'); } } });
+  document.execCommand = () => false;
+})()`);
+
+await setPreference(null);
+check('gallery actions: English page loads', await go(pageUrl('en')) && (await htmlLang()) === 'en');
+const actions = await ev(`[...document.querySelectorAll('.card .acts')].map((acts) => [...acts.children].map((el) => el.tagName))`);
+check('gallery actions: twelve cards show three actions', actions.length === 12 && actions.every((a) => a.length === 3), `${actions.length} cards`);
+check('gallery actions: no download entry remains', await ev(`!document.querySelector('.card .acts a[download], .card .acts [download]')`));
+check('gallery actions: English labels', (await actionLabels()).join('|') === 'Docs|Copy Source|Copy AI Prompt', (await actionLabels()).join('|'));
+check('gallery actions: English layout has no sideways scroll', (await ev('document.documentElement.scrollWidth')) <= 390, await ev('document.documentElement.scrollWidth'));
+const sourceCopy = await clickAction(0, '[data-copy-source]');
+check('gallery actions: Copy Source still copies the component', typeof sourceCopy === 'string' && sourceCopy.includes("fx.define('sakuga-button'"), (sourceCopy || '').slice(0, 48));
+check('gallery actions: Copy Source flashes a confirmation', (await actionLabels())[1] === 'Copied', (await actionLabels())[1]);
+const sourceToast = await toastState();
+check('gallery actions: source copy shows a Sakuga toast', sourceToast.open && sourceToast.message === 'Component source copied.', JSON.stringify(sourceToast));
+const primaryPrompt = await clickAction(0, '[data-copy-prompt]');
+check('gallery actions: prompt has the component and every link', typeof primaryPrompt === 'string' && primaryPrompt.includes('Sakuga VFX Button component') && primaryPrompt.includes('https://raw.githubusercontent.com/chenlongapps/sakuga-vfx-i18n/main/skills/sakuga-vfx/SKILL.md') && primaryPrompt.includes('/main/button/button.js') && primaryPrompt.includes('/main/button/README.md'));
+check('gallery actions: primary prompt keeps the default variant', !primaryPrompt.includes('secondary'));
+check('gallery actions: prompt button flashes the result', (await actionLabels())[2] === 'AI prompt copied', (await actionLabels())[2]);
+const promptToast = await toastState();
+check('gallery actions: prompt copy shows a Sakuga toast', promptToast.open && promptToast.message === 'AI prompt copied', JSON.stringify(promptToast));
+await sleep(2100);
+check('gallery actions: prompt button restores its label', (await actionLabels())[2] === 'Copy AI Prompt', (await actionLabels())[2]);
+const secondaryPrompt = await clickAction(1, '[data-copy-prompt]');
+check('gallery actions: secondary prompt names the variant', secondaryPrompt.includes('Sakuga VFX Button (secondary) component') && secondaryPrompt.includes('Use the secondary variant, not the primary button.'));
+const PROMPT_IDS = ['button', 'button', 'toggle', 'slider', 'checkbox', 'radio', 'input', 'tabs', 'progress', 'rating', 'toast', 'tooltip'];
+for (let i = 0; i < PROMPT_IDS.length; i++) {
+  const prompt = i === 0 ? primaryPrompt : i === 1 ? secondaryPrompt : await clickAction(i, '[data-copy-prompt]');
+  const id = PROMPT_IDS[i];
+  const raw = `https://raw.githubusercontent.com/chenlongapps/sakuga-vfx-i18n/main/${id}/${id}.js`;
+  const docs = `https://raw.githubusercontent.com/chenlongapps/sakuga-vfx-i18n/main/${id}/README.md`;
+  check(`gallery actions: card ${i + 1} prompt links to ${id}`, prompt.includes(raw) && prompt.includes(docs));
+}
+await failClipboard();
+await ev(`document.querySelectorAll('.card')[0].querySelector('[data-copy-prompt]').click()`);
+await sleep(120);
+const failedToast = await toastState();
+check('gallery actions: failure flashes and shows a toast', (await actionLabels())[2] === 'Copy failed' && failedToast.open && failedToast.message === 'Copy failed', JSON.stringify(failedToast));
 
 await setPreference(null);
 for (const [browsers, expected, expectedTitle] of [
@@ -125,11 +183,25 @@ await ev(`[...document.querySelectorAll('[data-language-switch] a')].find((a) =>
 check('switch: the link navigates to Japanese', await waitFor(`location.href === ${JSON.stringify(pageUrl('ja'))} && document.readyState === 'complete'`, 15000));
 check('switch: saves the choice', (await preference()) === 'ja', await preference());
 check('switch: the page is Japanese', (await htmlLang()) === 'ja', await htmlLang());
+check('gallery: Japanese action labels', (await actionLabels()).join('|') === 'ドキュメント|ソースをコピー|AIプロンプトをコピー', (await actionLabels()).join('|'));
+check('gallery: Japanese layout has no sideways scroll', (await ev('document.documentElement.scrollWidth')) <= 390, await ev('document.documentElement.scrollWidth'));
+const jaPrompt = await clickAction(0, '[data-copy-prompt]');
+check('gallery: Japanese prompt is localized', jaPrompt.startsWith('Sakuga VFX Button コンポーネントを現在のプロジェクトに統合してください。') && jaPrompt.includes('スキル：') && jaPrompt.includes('実装要件：'));
+check('gallery: Japanese prompt links to Japanese docs', jaPrompt.includes('/main/button/README.ja.md'));
+const jaToast = await toastState();
+check('gallery: Japanese toast is localized', jaToast.open && jaToast.message === 'AIプロンプトをコピーしました', JSON.stringify(jaToast));
 check('switch: marks the current language', (await ev(`document.querySelector('[data-language-switch] [aria-current=page]').dataset.language`)) === 'ja');
 check('preference: restored on a later visit', await go(pageUrl(null)) && (await htmlLang()) === 'ja', await htmlLang());
 
 await setPreference(null);
 check('gallery: starts in Chinese', await go(pageUrl('zh-CN')) && (await htmlLang()) === 'zh-CN');
+check('gallery: Chinese action labels', (await actionLabels()).join('|') === '文档|复制源码|复制 AI 提示词', (await actionLabels()).join('|'));
+check('gallery: Chinese layout has no sideways scroll', (await ev('document.documentElement.scrollWidth')) <= 390, await ev('document.documentElement.scrollWidth'));
+const zhPrompt = await clickAction(1, '[data-copy-prompt]');
+check('gallery: Chinese prompt is localized', zhPrompt.startsWith('请将 Sakuga VFX Button (secondary) 组件集成到当前项目中。') && zhPrompt.includes('请使用 secondary 变体，而不是主按钮。') && zhPrompt.includes('组件源码：') && zhPrompt.includes('实现要求：'));
+check('gallery: Chinese prompt links to Chinese docs', zhPrompt.includes('/main/button/README.zh-CN.md'));
+const zhToast = await toastState();
+check('gallery: Chinese toast is localized', zhToast.open && zhToast.message === '已复制 AI 提示词', JSON.stringify(zhToast));
 const demoUrl = await ev(`document.querySelector('.card .acts a.pill').href`);
 check('gallery: demo link keeps the language', new URL(demoUrl).searchParams.get('lang') === 'zh-CN', demoUrl);
 check('demo: follows the gallery language', await go(demoUrl) && (await htmlLang()) === 'zh-CN', await htmlLang());

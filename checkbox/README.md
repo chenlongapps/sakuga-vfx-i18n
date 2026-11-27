@@ -1,5 +1,7 @@
 # Checkbox
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 Tick it and two crescents swing round the box, crystals fly, the tick draws itself, a glint follows and ズザッ lands in dotted letters. Untick it and it goes out in a small puff.
 
 ## Run it

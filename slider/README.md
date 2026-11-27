@@ -1,5 +1,7 @@
 # Slider
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A range slider with a cloud behind the thumb. The value rides in a bubble that leans with the drag. The thumb stretches into a teardrop and lags behind your finger on a spring. Drag fast and a bank of cumulus rolls up behind it with speed lines and chips, and シュッ. Let go while it is still moving and a crescent flies on ahead, with a small burst, and two puffs are left where it came from.
 
 ## Run it

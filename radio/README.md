@@ -1,5 +1,7 @@
 # Radio
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A radio group. The picked dot springs in, a fan of wedges goes off it, two puffs drift away, and a hollow ポン pops up beside it.
 
 ## Run it

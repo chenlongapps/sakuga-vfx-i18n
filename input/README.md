@@ -1,5 +1,7 @@
 # Input
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A text field that kicks up dust. Focus it and three wedges fly off the corner. Every key throws a puff of dust, and now and then a chip, from where the caret is, and the box gives a little.
 
 ## Run it

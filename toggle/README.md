@@ -1,5 +1,7 @@
 # Toggle
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 The switch squashes under a press, then the knob stretches and leaves an inked trail. On opening, a curled sheet of water rises behind the knob and throws off rounded drops. The crest folds back into the track as it fills. On closing, the liquid recedes and the opposite end throws a lower wave with sharper, sideways fragments. Both impacts show a localized `kachi` and end with a glint.
 
 ## Run it

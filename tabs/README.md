@@ -1,5 +1,7 @@
 # Tabs
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 The raised tab itself slides to the one you pick, stretching as it goes, and lands with wedges above it, a puff at the side it came from and speed lines behind it.
 
 ## Run it

@@ -73,6 +73,13 @@ const sakugaSite = (() => {
     tabChanged: ['Tab: {value}', '当前选项卡：{value}', '現在のタブ：{value}'],
     ratingChanged: ['Rating: {value} / 5', '评分：{value} / 5', '評価：{value} / 5'],
     loadingDone: ['Loading complete', '加载完成', '読み込みが完了しました'],
+    docs: ['Docs', '文档', 'ドキュメント'],
+    copySource: ['Copy Source', '复制源码', 'ソースをコピー'],
+    copyPrompt: ['Copy AI Prompt', '复制 AI 提示词', 'AIプロンプトをコピー'],
+    sourceCopied: ['Component source copied.', '已复制组件源码。', 'コンポーネントのソースをコピーしました。'],
+    copiedShort: ['Copied', '已复制', 'コピーしました'],
+    promptCopied: ['AI prompt copied', '已复制 AI 提示词', 'AIプロンプトをコピーしました'],
+    copyFailed: ['Copy failed', '复制失败', 'コピーに失敗しました'],
   };
 
   function t(key, value) {

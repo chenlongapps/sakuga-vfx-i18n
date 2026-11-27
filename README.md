@@ -31,7 +31,7 @@ This fork of Justin Finkelman's [Sakuga VFX](https://github.com/finktheartist/sa
 
 **[Open the gallery in English](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=en)** · [简体中文](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=zh-CN) · [日本語](https://chenlongapps.github.io/sakuga-vfx-i18n/gallery/?lang=ja)
 
-The `?lang=` switch localizes both the interface and the drawn sound effects. Without a `?lang` tag the site uses your saved choice, then your browser language, then English; clicking a language link saves the choice for later visits. Every **Docs and demo** link keeps the selected language in its URL.
+The `?lang=` switch localizes both the interface and the drawn sound effects. Without a `?lang` tag the site uses your saved choice, then your browser language, then English; clicking a language link saves the choice for later visits. Every **Docs** link keeps the selected language in its URL.
 
 ## Component Showcase
 
@@ -130,48 +130,21 @@ The hint springs out like a speech bubble with puffs and a ring.<br>
 - **Hand-drawn physics.** Canvas 2D puffs, bursts, crystals, wedges, slashes, splashes and rings are drawn in code.
 - **Localized impact words.** `BOOM!`, `CLICK!`, `SKRR!` and friends follow `<html lang>`; missing translations fall back to Japanese.
 - **One file, zero setup.** Each component is a single script loaded with a plain `<script>` tag. No npm install, no build step.
+- **AI-ready handoff.** In the gallery, **Copy AI Prompt** produces a localized integration prompt with the component's Skill, source and docs links for Codex, Claude Code, OpenCode, Cursor and other AI coding tools.
 - **Real controls.** Focus, keyboard, touch and native `<form>` values work through `ElementInternals`.
 - **Themable.** Override `--sk-*` CSS variables (for example `--sk-acc`) from your own `:root`; `prefers-reduced-motion` turns effects off while keeping state changes.
 
-## Quick Start
+## Install the Skill
 
-Serve the repository locally and open the gallery, or copy one component file into your project:
+Install the `sakuga-vfx` skill with the [skills](https://skills.sh/) CLI:
 
 ```sh
-python3 -m http.server 8000
-# open http://localhost:8000/gallery/
+npx skills add chenlongapps/sakuga-vfx-i18n
 ```
 
-```html
-<script src="button.js"></script>
-<sakuga-button>Confirm</sakuga-button>
+It installs the skill for the AI coding tools it detects, such as Claude Code, Codex, OpenCode and Cursor. Add `-g` for a global install. No clone or manual copying is needed.
 
-<script src="toggle.js"></script>
-<sakuga-toggle label="Notifications"></sakuga-toggle>
-
-<script src="progress.js"></script>
-<sakuga-progress label="Uploading"></sakuga-progress>   <!-- then el.set(0.4) -->
-```
-
-## Installation & Usage
-
-There is no package to install. In the gallery choose **Download .js** or **Copy source**, or copy a file such as [`button/button.js`](button/button.js) from this repository. Load it with a script tag and use its custom element.
-
-Each folder's README lists its attributes, properties and events. The value controls (toggle, slider, checkbox, radio, input, rating) work inside a `<form>` like native ones: with a `name`, their values are submitted with the form.
-
-```js
-const el = document.querySelector('sakuga-button');
-el.addEventListener('click', async () => {
-  await save();
-  el.done();          // a check lands on it, with a glint, and goes after 1.8 seconds
-});
-el.done(0);           // ...or keep the check until the next click
-el.impact();          // play the click reaction without a click
-```
-
-Each file carries its own copy of the shared core (springs, effects layer and lettering paths). The first script loaded sets `window.SakugaFX`; later components reuse its canvas and animation loop. The toggle additionally draws its housing, knob and liquid on a small canvas inside the switch.
-
-The look: white paper, white/lavender effects with a violet line, pink accents and an impact burst on every confirm. Control colors come from `--sk-*` variables (`--sk-ink`, `--sk-card`, `--sk-pri`, `--sk-acc`, …) and a page's own `:root { --sk-acc: ... }` wins over the defaults.
+Installing is optional: the gallery's **Copy AI Prompt** already includes the raw `SKILL.md` URL.
 
 ## Components
 
@@ -194,29 +167,6 @@ The look: white paper, white/lavender effects with a violet line, pink accents a
 The gallery and every component demo accept `?lang=en`, `?lang=zh-CN` and `?lang=ja`. The switch changes both interface copy and Canvas lettering, and the choice is remembered for later visits. For standalone use, set your page's `<html lang>` to `en`, `zh-CN` or `ja`; each effect reads the language when it is triggered. If the language is unset or that effect has no translation, the original Japanese lettering is used.
 
 Because the impact words are localized, the showcase records a separate Animated WebP for each language; the component behavior and timing are identical. The lettering sources live in [`art/words/<lang>/`](art/words/), and the build script embeds their traced paths in every component file.
-
-## Development
-
-```sh
-python3 -m http.server 8000                            # serve the repo root
-node tools/build.mjs                                   # stamp core.js into every component
-node tools/build.mjs --check                           # verify all copies are current
-node tools/test.mjs http://localhost:8000/gallery/     # drive all controls in headless Chrome
-node tools/shot.mjs URL OUT W H SCALE                  # full-page screenshot
-```
-
-`core.js` is the source of the shared core. After editing it, run `node tools/build.mjs`, which copies it into every component file (between the `// >>> sakuga core` markers) and into the skill. `tools/test.mjs` drives every control with real touch and key events at phone width, checks form values, sideways scroll and language detection/switching/persistence, and exits 1 on a failure. `tools/shot.mjs` captures full-page screenshots. Both need Chrome or Chromium (`CHROME=...` if it is somewhere unusual). See the [asset generation and tracing guide](art/words/README.md) for the lettering sprites.
-
-To regenerate the showcase animations (Node 22+, ffmpeg, and libwebp's `img2webp` or Python Pillow):
-
-```sh
-node tools/record-webp.mjs                                      # all 12 demos x 3 languages
-node tools/record-webp.mjs --only toggle,slider --lang ja        # selected demos / language
-node tools/record-webp.mjs --fps 30 --duration 5 --image-width 480 # custom capture
-node tools/record-webp.mjs --base-url http://localhost:8000      # use an existing server
-```
-
-The recorder serves the real component files, plays them with real mouse/keyboard events, steps the shared core at a fixed frame rate, and writes `docs/webp/<demo>.<lang>.webp` plus a `manifest.json`. Use `--help` style flags as shown above; `--crop auto` tightens the frame around the component, and `--keep-frames` keeps the source PNGs for re-encoding.
 
 ## Known Limits
 

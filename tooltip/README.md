@@ -1,5 +1,7 @@
 # Tooltip
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A help button whose hint springs out of it like a speech bubble, with puffs either side, a ring off the top of the button, wedges at the corner and a hollow カチッ.
 
 ## Run it

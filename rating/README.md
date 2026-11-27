@@ -1,5 +1,7 @@
 # Rating
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 Five stars that pop in one after another. The last one lit gets a fan of wedges, a glint and a hollow ポン; five stars gets a burst behind it as well.
 
 ## Run it
